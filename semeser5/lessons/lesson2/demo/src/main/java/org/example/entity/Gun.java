@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import java.time.Instant;
 
 @RequiredArgsConstructor
-@Builder
 @AllArgsConstructor
 @Getter
 public class Gun {

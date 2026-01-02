@@ -24,4 +24,13 @@ public class ScenarioService {
         spaceShip.shield();
 
     }
+
+    public String startBattle(int firstShipId, int secondShipId) {
+        SpaceShip spaceShip = spaceShipService.getSpaceShip(firstShipId);
+        SpaceShip spaceShip2 = spaceShipService.getSpaceShip(secondShipId);
+
+        String fire = spaceShip.fire();
+        String fire2 = spaceShip2.fire();
+        return fire + "\n" + fire2;
+    }
 }

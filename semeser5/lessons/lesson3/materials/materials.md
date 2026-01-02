@@ -1,5 +1,3 @@
 ## Materials
-- https://habr.com/ru/articles/590679/
-- https://www.geeksforgeeks.org/springboot/spring-mvc-framework/
-- https://docs.spring.io/spring-framework/reference/web/webmvc.html
-- https://www.baeldung.com/spring-mvc
+- https://aws.amazon.com/what-is/restful-api/#:~:text=RESTful%20API%20is%20an%20interface,applications%20to%20perform%20various%20tasks.
+- https://medium.com/@karan0361.be20/spring-mvc-427de39e8886

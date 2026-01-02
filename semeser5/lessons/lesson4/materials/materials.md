@@ -1,5 +1,5 @@
 ## Materials
-- https://habr.com/ru/articles/590679/
-- https://www.geeksforgeeks.org/springboot/spring-mvc-framework/
-- https://docs.spring.io/spring-framework/reference/web/webmvc.html
-- https://www.baeldung.com/spring-mvc
+- https://www.baeldung.com/spring-mvc-custom-validator
+- https://www.baeldung.com/spring-boot-bean-validation
+- https://www.baeldung.com/exception-handling-for-rest-with-spring
+- 

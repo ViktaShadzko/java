@@ -1,0 +1,13 @@
+org\example\entity\SpaceShip$SpaceShipBuilder.class
+org\example\service\ScenarioService.class
+org\example\controller\JobController.class
+org\example\entity\Gun.class
+org\example\service\SpaceShipService.class
+org\example\entity\ShieldGenerator$ShieldGeneratorBuilder.class
+org\example\entity\Engine.class
+org\example\controller\WelcomeController.class
+org\example\repository\SpaceShipInMemoryRepository.class
+org\example\entity\SpaceShip.class
+org\example\controller\SpaceShipController.class
+org\example\configuration\WebConfig.class
+org\example\entity\ShieldGenerator.class

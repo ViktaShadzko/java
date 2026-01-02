@@ -1,18 +1,22 @@
 package org.example.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import org.springframework.stereotype.Component;
+import lombok.Setter;
 
 import java.util.List;
 
 @AllArgsConstructor
 @Getter
-@Component("spaceShip")
+@Setter
+@Builder
 public class SpaceShip {
+    private int id;
     private List<Gun> guns;
     private ShieldGenerator shieldGenerator;
     private Engine engines;
+    private String name;
 
 
     public void fire() {

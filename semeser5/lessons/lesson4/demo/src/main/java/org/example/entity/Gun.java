@@ -1,21 +1,30 @@
 package org.example.entity;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.time.Instant;
 
 @RequiredArgsConstructor
-@Builder
 @AllArgsConstructor
 @Getter
 public class Gun {
+    @NotBlank(message = "Gun noise cannot be blank")
     private final String noise;
+
+    @Positive(message = "Damage must be positive")
     private final int damage;
+
+    @Positive(message = "Range must be positive")
     private final int range;
+
+    @PositiveOrZero(message = "Reload time must be zero or positive")
     private final int reloadTime;
+
     private Instant lastFireTime;
 
     public boolean fire() {

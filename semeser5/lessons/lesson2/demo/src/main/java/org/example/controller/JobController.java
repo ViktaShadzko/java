@@ -1,12 +1,11 @@
 package org.example.controller;
 
 import org.example.service.ScenarioService;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
+@RequestMapping("/job")
 public class JobController {
     private final ScenarioService service;
 
@@ -14,6 +13,10 @@ public class JobController {
         this.service = service;
     }
 
-
+    @ResponseBody
+    public String startJob(@RequestParam(name = "firstShipId") int firstShipId,
+                        @RequestHeader(name = "secondShipId") int secondShipId) {
+        return service.startBattle(firstShipId, secondShipId);
+    }
 }
 

@@ -1,5 +1,8 @@
 package org.example.repository;
 
+import org.example.entity.Engine;
+import org.example.entity.Gun;
+import org.example.entity.ShieldGenerator;
 import org.example.entity.SpaceShip;
 import org.springframework.stereotype.Repository;
 
@@ -14,8 +17,26 @@ public class SpaceShipInMemoryRepository {
     private final Map<Integer, SpaceShip> spaceShips = new HashMap<>();
     private int idCounter = 1;
 
+    public SpaceShipInMemoryRepository() {
+        SpaceShip spaceShip1 =  SpaceShip.builder()
+                .id(1)
+                .engines(new Engine(200, 9))
+                .shieldGenerator(new ShieldGenerator(1000, 500))
+                .guns(List.of(new Gun("Pauuuuuuuuuuu",30,10,10), new Gun("Pew", 5,2,1)))
+                .build();
+
+        SpaceShip spaceShip2 =  SpaceShip.builder()
+                .id(2)
+                .engines(new Engine(150, 7))
+                .shieldGenerator(new ShieldGenerator(800, 300))
+                .guns(List.of(new Gun("Blam",20,5,5)))
+                .build();
+        spaceShips.put(spaceShip1.getId(), spaceShip1);
+
+        spaceShips.put(spaceShip2.getId(), spaceShip2);
+    }
+
     public SpaceShip save(SpaceShip spaceShip) {
-        // If the spaceship doesn't have an ID (or has ID 0), assign a new one
         if (spaceShip.getId() == 0) {
             SpaceShip newSpaceShip = new SpaceShip(
                 idCounter++,
