@@ -23,28 +23,34 @@ public class SpaceShipController {
     }
 
     @GetMapping(path = "/spaceShip/{id}")
-    public SpaceShip getSpaceShip(int id) {
+    public SpaceShip getSpaceShip(
+            @PathVariable int id) {
         return service.getSpaceShip(id);
     }
 
     @PostMapping(path = "/spaceShip")
-    public SpaceShip postSpaceShip(SpaceShip spaceShip) {
-        SpaceShip spaceShipCreated = service.save(spaceShip);
-        return spaceShipCreated;
+    public SpaceShip postSpaceShip(
+            @RequestBody SpaceShip spaceShip) {
+        return service.save(spaceShip);
     }
 
     @PatchMapping(path = "/spaceShip/{id}")
-    public SpaceShip updateSpaceShip(int id, SpaceShip spaceShip) {
+    public SpaceShip updateSpaceShip(
+            @PathVariable int id,
+            @RequestBody SpaceShip spaceShip) {
         return service.patch(id, spaceShip);
     }
 
     @PutMapping(path = "/spaceShip/{id}")
-    public SpaceShip putSpaceShip(int id, SpaceShip spaceShip) {
+    public SpaceShip putSpaceShip(
+            @PathVariable int id,
+            @RequestBody SpaceShip spaceShip) {
         return service.put(id, spaceShip);
     }
 
+
     @DeleteMapping(path = "/spaceShip/{id}")
-    public void deleteSpaceShip(int id) {
+    public void deleteSpaceShip(@PathVariable int id) {
         service.deleteSpaceShip(id);
     }
 

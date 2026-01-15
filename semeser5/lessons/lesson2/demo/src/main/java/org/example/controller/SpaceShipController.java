@@ -4,6 +4,7 @@ import org.example.entity.SpaceShip;
 import org.example.service.SpaceShipService;
 import org.springframework.web.bind.annotation.*;
 
+@RequestMapping("/api/v1/space")
 @RestController
 public class SpaceShipController {
     private final SpaceShipService service;

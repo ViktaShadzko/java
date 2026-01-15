@@ -17,6 +17,11 @@ public class MainXML {
 
         ScenarioService scenarioService = ctx.getBean(ScenarioService.class);
         SpaceShip ship = ctx.getBean(SpaceShip.class);
+        ctx.getBean("loger");
+        ctx.getBean("loger");
+        ctx.getBean("loger");
+        ctx.getBean("loger");
+        ctx.getBean("loger");
         scenarioService.doScenario(ship);
 
         ctx.close();

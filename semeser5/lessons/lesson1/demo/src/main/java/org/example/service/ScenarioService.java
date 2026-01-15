@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.entity.SpaceShip;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

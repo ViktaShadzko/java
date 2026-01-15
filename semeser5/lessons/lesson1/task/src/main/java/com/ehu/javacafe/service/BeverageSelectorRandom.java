@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BeverageSelectorRandom implements BeverageSelector {
-    private final int amountOfBeverages = new Random().nextInt(1, 4);
+    private final int amountOfBeverages = ThreadLocalRandom.current().nextInt(1, 5);
     private final CoffeeService beverageService;
 
     @Autowired
@@ -22,9 +22,7 @@ public class BeverageSelectorRandom implements BeverageSelector {
         long beverageCount = beverageService.getBeverageCount();
         List<Beverage> order = new ArrayList<>();
         for (int i = 0; i < amountOfBeverages; i++) {
-
-            Random random = new Random();
-            long randomId = random.nextLong(1, beverageCount + 1);
+            long randomId = ThreadLocalRandom.current().nextLong(1, beverageCount + 1);
             Beverage beverageById = beverageService.getBeverageById(randomId);
             order.add(beverageById);
         }

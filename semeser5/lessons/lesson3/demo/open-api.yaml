@@ -1,0 +1,138 @@
+openapi: 3.0.3
+info:
+  title: SpaceShip API
+  description: REST API for managing spaceships
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+paths:
+  /api/v1/space/spaceShip:
+    get:
+      summary: Get all spaceships
+      operationId: getAllSpaceShips
+      responses:
+        '200':
+          description: Successfully retrieved list of spaceships
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SpaceShip'
+    post:
+      summary: Create a new spaceship
+      operationId: createSpaceShip
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpaceShip'
+      responses:
+        '200':
+          description: Successfully created spaceship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpaceShip'
+  /api/v1/space/spaceShip/{id}:
+    get:
+      summary: Get spaceship by ID
+      operationId: getSpaceShipById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully retrieved spaceship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpaceShip'
+    put:
+      summary: Update spaceship (full replacement)
+      operationId: updateSpaceShip
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpaceShip'
+      responses:
+        '200':
+          description: Successfully updated spaceship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpaceShip'
+    patch:
+      summary: Update spaceship (partial update)
+      operationId: patchSpaceShip
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpaceShip'
+      responses:
+        '200':
+          description: Successfully patched spaceship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpaceShip'
+    delete:
+      summary: Delete spaceship by ID
+      operationId: deleteSpaceShip
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Successfully deleted spaceship
+  /welcome:
+    get:
+      summary: Welcome page
+      operationId: welcomePage
+      parameters:
+        - name: user
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Guest
+      responses:
+        '200':
+          description: Welcome page HTML
+          content:
+            text/html:
+              schema:
+                type: string
+components:
+  schemas:
+    SpaceShip:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string

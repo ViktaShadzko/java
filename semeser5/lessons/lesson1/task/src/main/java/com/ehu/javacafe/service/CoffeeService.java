@@ -14,7 +14,9 @@ public class CoffeeService {
     private static final Logger logger = LoggerFactory.getLogger(CoffeeService.class);
     private final BeverageRepository beverageRepository;
 
-
+    public CoffeeService(BeverageRepository beverageRepository) {
+        this.beverageRepository = beverageRepository;
+    }
 
 
     public Beverage getBeverageById(long id) {
