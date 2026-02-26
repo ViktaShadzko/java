@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "name": "Casino API Tests",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
+

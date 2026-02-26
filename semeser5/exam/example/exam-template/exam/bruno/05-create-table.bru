@@ -1,0 +1,22 @@
+meta {
+  name: Create Table
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:8080/api/tables
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "VIP Table 1",
+    "gameType": "POKER",
+    "minBet": 100,
+    "maxBet": 10000,
+    "available": true
+  }
+}
+

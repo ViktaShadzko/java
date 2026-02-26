@@ -1,0 +1,19 @@
+meta {
+  name: Occupy Table
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:8080/api/tables/1/occupy
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "John Doe",
+    "money": 5000
+  }
+}
+
