@@ -1,0 +1,536 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Лекция 0 — Введение в курс | Java OOP</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --red:#e94560; --blue:#58a6ff; --green:#56d364;
+      --orange:#ffa657; --purple:#d2a8ff;
+      --bg:#0f0f1a; --bg2:#1a1a2e; --bg3:#16213e;
+      --text:#e2e8f0; --muted:#a0aec0; --dim:#cbd5e0;
+    }
+    .reveal-viewport { background: var(--bg); }
+    .reveal { font-family:'Inter',sans-serif; font-size:26px; color:var(--text); }
+
+    .reveal h1 { font-family:'Inter',sans-serif; font-weight:800; color:var(--text); font-size:1.75em;
+      border-bottom:3px solid var(--red); padding-bottom:.22em; margin-bottom:.45em;
+      text-transform:none; letter-spacing:-.01em; }
+    .reveal h2 { font-family:'Inter',sans-serif; font-weight:800; color:var(--red);
+      font-size:1.3em; text-transform:none; }
+    .reveal h3 { font-family:'Inter',sans-serif; font-weight:600; color:var(--blue);
+      font-size:.9em; text-transform:none; margin:.4em 0 .2em; }
+    .reveal p, .reveal li { color:var(--dim); line-height:1.65; }
+    .reveal strong { color:var(--orange); }
+    .reveal em { color:var(--muted); }
+    .reveal a { color:var(--blue); }
+
+    .slide-title { background:linear-gradient(145deg,var(--bg) 0%,var(--bg3) 100%) !important; }
+    .slide-title h1 { font-size:2em; color:var(--red); border:none; padding:0; }
+    .slide-title h2 { color:var(--muted); font-size:1em; font-weight:400; }
+    .slide-section { background:linear-gradient(135deg,var(--bg) 0%,var(--bg3) 100%) !important; }
+    .slide-section h2 { font-size:2em; font-weight:800; color:var(--red);
+      border-left:6px solid var(--red); padding-left:.4em; }
+    .slide-section p { color:var(--muted); font-size:.82em; }
+
+    .badge { display:inline-block; background:var(--red); color:#fff; font-weight:700;
+      font-size:.52em; padding:.3em 1em; border-radius:20px; margin:.3em .2em 0; }
+    .badge.blue { background:var(--blue); }
+    .badge.green { background:#238636; }
+    .badge.dark { background:var(--bg2); border:1px solid var(--blue); color:var(--blue); }
+
+    .cols  { display:grid; grid-template-columns:1fr 1fr;     gap:1.1em; }
+    .cols3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:.8em;  }
+
+    .card { background:var(--bg2); border-radius:10px; padding:.65em .9em; border-top:3px solid var(--red); }
+    .card h3 { font-size:.82em; margin:0 0 .25em; }
+    .card p  { font-size:.73em; color:var(--muted); margin:0; }
+    .card.red    { border-color:var(--red);    } .card.red    h3 { color:var(--red);    }
+    .card.blue   { border-color:var(--blue);   } .card.blue   h3 { color:var(--blue);   }
+    .card.green  { border-color:var(--green);  } .card.green  h3 { color:var(--green);  }
+    .card.orange { border-color:var(--orange); } .card.orange h3 { color:var(--orange); }
+    .card.purple { border-color:var(--purple); } .card.purple h3 { color:var(--purple); }
+
+    .box { background:var(--bg2); border:1px solid var(--red); border-radius:8px;
+      padding:.45em .85em; margin:.45em 0; }
+    .box .label { font-size:.58em; font-weight:700; text-transform:uppercase;
+      letter-spacing:.08em; color:var(--red); margin-bottom:.15em; }
+    .box p { font-size:.78em; margin:0; color:var(--text); }
+    .box.blue   { border-color:var(--blue);   } .box.blue   .label { color:var(--blue);   }
+    .box.green  { border-color:var(--green);  } .box.green  .label { color:var(--green);  }
+    .box.orange { border-color:var(--orange); } .box.orange .label { color:var(--orange); }
+
+    .teacher-card { background:var(--bg2); border-radius:14px; padding:1em 1.3em; border-left:6px solid; }
+    .teacher-card .role { font-size:.58em; font-weight:700; text-transform:uppercase;
+      letter-spacing:.1em; margin-bottom:.25em; }
+    .teacher-card .name { font-size:1.15em; font-weight:800; color:var(--text); margin-bottom:.25em; }
+    .teacher-card .desc { font-size:.73em; color:var(--muted); }
+    .teacher-card.lector   { border-color:var(--red);  } .teacher-card.lector   .role { color:var(--red);  }
+    .teacher-card.practice { border-color:var(--blue); } .teacher-card.practice .role { color:var(--blue); }
+
+    .topic-grid { display:grid; grid-template-columns:1fr 1fr; gap:.35em; }
+    .topic-item { background:var(--bg2); border-radius:6px; padding:.35em .65em;
+      font-size:.7em; color:var(--dim); border-left:3px solid var(--red); }
+    .topic-item .num { color:var(--red); font-weight:700; margin-right:.3em; }
+    .topic-item.current { border-color:var(--green); background:#0d2818; }
+    .topic-item.current .num { color:var(--green); }
+
+    .pros { background:#0d2818; border:1px solid #238636; border-radius:8px; padding:.55em .85em; }
+    .cons { background:#2d1117; border:1px solid #da3633; border-radius:8px; padding:.55em .85em; }
+    .pros h3 { color:var(--green) !important; font-size:.82em; margin-bottom:.25em; }
+    .cons h3 { color:#f85149    !important; font-size:.82em; margin-bottom:.25em; }
+    .pros li::marker { color:var(--green); } .cons li::marker { color:#f85149; }
+    .pros li, .cons li { font-size:.78em; color:var(--dim); }
+
+    .reveal table { width:100%; border-collapse:collapse; font-size:.75em; }
+    .reveal th { background:var(--bg2); color:var(--red); padding:.38em .65em;
+      text-align:left; border:1px solid #30363d; }
+    .reveal td { padding:.33em .65em; border:1px solid #30363d; color:var(--dim); }
+    .reveal tr:nth-child(even) td { background:var(--bg2); }
+
+    .reveal pre { border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,.5);
+      font-size:.62em; margin:.4em 0; width:100%; }
+    .reveal code { font-family:'JetBrains Mono',monospace; }
+    .reveal :not(pre)>code { background:var(--bg2); color:var(--orange);
+      padding:.1em .35em; border-radius:4px; font-size:.82em; }
+
+    .checklist { list-style:none; padding-left:0; }
+    .checklist li::before { content:'✅  '; }
+    .checklist li { margin-bottom:.3em; font-size:.83em; color:var(--dim); }
+
+    .small  { font-size:.76em !important; }
+    .xsmall { font-size:.66em !important; }
+    .muted  { color:var(--muted) !important; }
+
+    .reveal .progress { color:var(--red); }
+    .reveal .controls { color:var(--red); }
+    .reveal .slide-number { color:#4a5568; font-size:.68em; }
+
+    blockquote { border-left:4px solid var(--red); padding:.4em .9em;
+      background:var(--bg2); border-radius:0 8px 8px 0;
+      font-style:italic; color:var(--muted); margin:.5em 0; }
+    blockquote strong { color:var(--red); }
+  </style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+
+<!-- ══ TITLE ══ -->
+<section class="slide-title" data-background-gradient="linear-gradient(145deg,#0f0f1a 0%,#0f3460 100%)">
+  <h1>☕ Введение в курс</h1>
+  <h2>Объектно-Ориентированное Программирование на Java</h2>
+  <p class="muted" style="margin-top:.6em;">Семестр 2 &nbsp;·&nbsp; Лекция 0 из 19 &nbsp;·&nbsp; Java Course</p>
+  <div style="margin-top:.8em;">
+    <span class="badge">Java</span>
+    <span class="badge blue">38 часов</span>
+    <span class="badge green">ООП</span>
+  </div>
+</section>
+
+<!-- ══ PLAN ══ -->
+<section>
+  <h1>🗂️ План лекции</h1>
+  <div class="cols">
+    <ol style="font-size:.82em;">
+      <li>О курсе и преподавателях</li>
+      <li>Структура курса — 19 тем</li>
+      <li>Расписание и формат занятий</li>
+    </ol>
+    <ol start="4" style="font-size:.82em;">
+      <li>Требования и оценивание</li>
+      <li>Инструменты и настройка окружения</li>
+      <li>Откуда вы пришли и куда идёте</li>
+    </ol>
+  </div>
+  <div class="box" style="margin-top:.8em;">
+    <div class="label">Важно</div>
+    <p>Вы уже знаете основы Java: переменные, циклы, функции, массивы.<br/>
+    Теперь мы поднимаемся на следующий уровень — <strong>ООП и архитектура кода</strong>.</p>
+  </div>
+</section>
+
+<!-- ══ SECTION 1 ══ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>1. О курсе и преподавателях</h2>
+  <p>Кто вас будет учить</p>
+</section>
+
+<!-- Teachers -->
+<section>
+  <h1>👨‍🏫 Преподаватели курса</h1>
+  <div class="cols" style="margin-top:.8em;">
+    <div class="teacher-card lector">
+      <div class="role">🎓 Лектор</div>
+      <div class="name">Виктор</div>
+      <div class="desc">Читает лекции · Теория, парадигмы, концепции<br/>Живой код в IDE · Разбор примеров</div>
+    </div>
+    <div class="teacher-card practice">
+      <div class="role">💻 Практические занятия</div>
+      <div class="name">Многоуважаемая<br/>Анастасия Юрьевна</div>
+      <div class="desc">Ведёт практику · Задания и разбор ошибок<br/>Code review · Обсуждение решений</div>
+    </div>
+  </div>
+  <div class="box blue" style="margin-top:.9em;">
+    <div class="label">Как это работает</div>
+    <p><strong>Виктор</strong> объясняет концепции → <strong>Многоуважаемая Анастасия Юрьевна</strong> помогает применить знания на практике</p>
+  </div>
+</section>
+
+<!-- ══ SECTION 2 ══ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>2. Структура курса</h2>
+  <p>19 тем — от ООП до Garbage Collector</p>
+</section>
+
+<!-- Topics 1 -->
+<section>
+  <h1>📚 Темы курса — Часть 1</h1>
+  <div class="topic-grid">
+    <div class="topic-item current"><span class="num">0</span>Введение в курс ← <strong style="color:var(--green)">сейчас</strong></div>
+    <div class="topic-item"><span class="num">1</span>Введение в ООП. Парадигмы программирования</div>
+    <div class="topic-item"><span class="num">2</span>Классы и объекты. Инкапсуляция. Наследование</div>
+    <div class="topic-item"><span class="num">3</span>Интерфейсы и абстрактные классы. Полиморфизм</div>
+    <div class="topic-item"><span class="num">4</span>Enum и Singleton</div>
+    <div class="topic-item"><span class="num">5</span>Исключения и обработка ошибок</div>
+    <div class="topic-item"><span class="num">6</span>Параметризованные типы и Дженерики</div>
+    <div class="topic-item"><span class="num">7</span>Коллекции (List, Set, Queue)</div>
+    <div class="topic-item"><span class="num">8</span>Мапы (HashMap, TreeMap)</div>
+    <div class="topic-item"><span class="num">9</span>Внутренние и анонимные классы</div>
+  </div>
+</section>
+
+<!-- Topics 2 -->
+<section>
+  <h1>📚 Темы курса — Часть 2</h1>
+  <div class="topic-grid">
+    <div class="topic-item"><span class="num">10</span>Лямбда-выражения и функциональное программирование</div>
+    <div class="topic-item"><span class="num">11</span>Stream API и операции над коллекциями</div>
+    <div class="topic-item"><span class="num">12</span>Модули и пакеты</div>
+    <div class="topic-item"><span class="num">13</span>Слоистая архитектура и MVC</div>
+    <div class="topic-item"><span class="num">14</span>IO Streams · Serializable · Cloneable</div>
+    <div class="topic-item"><span class="num">15</span>Локализация · Property · DateTime</div>
+    <div class="topic-item"><span class="num">16</span>XML и JSON парсинг</div>
+    <div class="topic-item"><span class="num">17</span>Рефлексия и аннотации</div>
+    <div class="topic-item"><span class="num">18</span>Garbage Collector и управление памятью</div>
+    <div class="topic-item"><span class="num">19</span>Консультация и Q&amp;A</div>
+  </div>
+</section>
+
+<!-- ══ SECTION 3 ══ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>3. Формат и расписание</h2>
+  <p>38 часов лекций + 38 часов практики</p>
+</section>
+
+<!-- Format -->
+<section>
+  <h1>📅 Структура занятий</h1>
+  <div class="cols">
+    <div class="card red">
+      <h3>🎓 Лекции — Виктор</h3>
+      <p>Теория и концепции<br/>Примеры кода в IDE<br/>Разбор парадигм и паттернов<br/>Вопросы приветствуются!</p>
+    </div>
+    <div class="card blue">
+      <h3>💻 Практика — Многоуважаемая Анастасия Юрьевна</h3>
+      <p>Самостоятельные задачи<br/>Разбор домашних заданий<br/>Code review<br/>Обсуждение решений</p>
+    </div>
+  </div>
+  <div class="box orange" style="margin-top:.9em;">
+    <div class="label">Итого</div>
+    <p><strong>38 часов лекций</strong> + <strong>38 часов практики</strong> &nbsp;·&nbsp; 19 тем &nbsp;·&nbsp; Семестр 2</p>
+  </div>
+</section>
+
+<!-- ══ SECTION 4 ══ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>4. Требования и оценивание</h2>
+  <p>Что нужно для успешного прохождения</p>
+</section>
+
+<!-- Requirements -->
+<section>
+  <h1>📋 Требования и оценивание</h1>
+  <div class="cols">
+    <div>
+      <h3>Что нужно делать:</h3>
+      <ul class="checklist">
+        <li>Посещать лекции и практические занятия</li>
+        <li>Сдавать домашние задания вовремя</li>
+        <li>Участвовать в обсуждениях</li>
+        <li>Писать код — много кода!</li>
+        <li>Слушаться <strong>Многоуважаемую Анастасию Юрьевну</strong></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Оценивание:</h3>
+      <div class="card orange" style="margin-bottom:.5em;">
+        <h3>📝 Домашние задания</h3>
+        <p>Лабораторные работы после каждой лекции</p>
+      </div>
+      <div class="card blue" style="margin-bottom:.5em;">
+        <h3>💬 Активность</h3>
+        <p>Участие на практических занятиях</p>
+      </div>
+      <div class="card red">
+        <h3>🎯 Итоговый проект / экзамен</h3>
+        <p>Применение всех изученных тем</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION 5 ══ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>5. Инструменты разработчика</h2>
+  <p>Что нам понадобится</p>
+</section>
+
+<!-- Tools -->
+<section>
+  <h1>🛠️ Настройка окружения</h1>
+  <div class="cols">
+    <table>
+      <thead><tr><th>Инструмент</th><th>Версия</th><th>Зачем</th></tr></thead>
+      <tbody>
+        <tr><td><strong>JDK</strong></td><td>21+</td><td>Компиляция и запуск Java</td></tr>
+        <tr><td><strong>IntelliJ IDEA</strong></td><td>Community</td><td>IDE — бесплатно</td></tr>
+        <tr><td><strong>Git</strong></td><td>latest</td><td>Контроль версий</td></tr>
+        <tr><td><strong>Maven/Gradle</strong></td><td>встроен</td><td>Сборка проектов</td></tr>
+      </tbody>
+    </table>
+    <div>
+      <h3>Проверяем установку:</h3>
+      <pre><code class="language-bash"># Проверить Java
+java --version   # ожидаем 21+
+
+# Проверить компилятор
+javac --version
+
+# Проверить Git
+git --version</code></pre>
+      <div class="box green" style="margin-top:.5em;">
+        <div class="label">Ожидаемый результат</div>
+        <p><code>java 21.0.x</code> или выше</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION 6 ══ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>6. Откуда вы пришли и куда идёте</h2>
+  <p>Процедурный стиль → ООП</p>
+</section>
+
+<!-- Procedural vs OOP -->
+<section>
+  <h1>🔄 Вы уже умеете — теперь идём дальше</h1>
+  <div class="box blue" style="margin-bottom:.5em;">
+    <div class="label">Что вы уже знаете</div>
+    <p>Переменные · Типы данных · Циклы · Условия · Функции · Массивы · Процедурный стиль</p>
+  </div>
+  <div class="cols">
+    <div>
+      <p class="small muted" style="margin-bottom:.3em;">✅ Вы это <strong style="color:var(--green)">уже знаете</strong>:</p>
+      <pre><code class="language-java">public class PreviousSemester {
+
+  public static double average(
+                      int[] grades) {
+    int sum = 0;
+    for (int grade : grades) {
+      sum += grade;
+    }
+    return (double) sum / grades.length;
+  }
+
+  public static void main(String[] args) {
+    int[] grades = {8, 9, 7, 10, 6};
+    System.out.println(average(grades));
+    // → 8.0
+  }
+}</code></pre>
+    </div>
+    <div>
+      <p class="small muted" style="margin-bottom:.3em;">🚀 К этому мы <strong style="color:var(--orange)">придём</strong>:</p>
+      <pre><code class="language-java">public class Student {
+  private String name;
+  private int[]  grades;
+
+  public Student(String name,
+                 int[] grades) {
+    this.name   = name;
+    this.grades = grades;
+  }
+
+  public double getAverage() {
+    int sum = 0;
+    for (int g : grades) sum += g;
+    return (double) sum / grades.length;
+  }
+
+  public String getSummary() {
+    return name + " → " + getAverage();
+  }
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- Skills -->
+<section>
+  <h1>🎯 Что вы будете уметь после курса</h1>
+  <div class="cols">
+    <div>
+      <ul class="checklist">
+        <li>Писать <strong>объектно-ориентированный</strong> код на Java</li>
+        <li>Применять принципы <strong>ООП</strong> на практике</li>
+        <li>Использовать <strong>коллекции, стримы, лямбды</strong></li>
+        <li>Работать с <strong>файлами, исключениями, дженериками</strong></li>
+        <li>Понимать <strong>рефлексию, аннотации, модули</strong></li>
+        <li>Строить приложения по <strong>MVC-архитектуре</strong></li>
+        <li>Основы управления памятью <strong>JVM / GC</strong></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Это фундамент для:</h3>
+      <div class="card red"    style="margin-bottom:.4em;"><h3>⚡ Spring Boot</h3><p>Веб-приложения и REST API</p></div>
+      <div class="card blue"   style="margin-bottom:.4em;"><h3>🗄️ Базы данных</h3><p>JDBC, JPA, Hibernate</p></div>
+      <div class="card green"  style="margin-bottom:.4em;"><h3>🔧 Backend</h3><p>Микросервисы, Docker, CI/CD</p></div>
+      <div class="card orange"                            ><h3>📱 Android</h3><p>Мобильная разработка</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Tips -->
+<section>
+  <h1>💡 Как учиться эффективно</h1>
+  <div class="cols">
+    <div class="pros">
+      <h3>✅ Делайте так:</h3>
+      <ul>
+        <li><strong>Набирайте код руками</strong> — не копируйте</li>
+        <li><strong>Экспериментируйте</strong> — ломайте примеры</li>
+        <li><strong>Задавайте вопросы</strong> — нет глупых вопросов</li>
+        <li><strong>30 минут в день</strong> лучше, чем 4 часа раз в неделю</li>
+        <li><strong>Слушайтесь Многоуважаемую Анастасию Юрьевну</strong> 👑</li>
+        <li><strong>Думайте своей головой</strong> — понимание важнее кода от ИИ</li>
+      </ul>
+    </div>
+    <div>
+      <div class="cons" style="margin-bottom:.7em;">
+        <h3>❌ Избегайте:</h3>
+        <ul>
+          <li>Откладывать задания на потом</li>
+          <li>Копировать, не понимая код</li>
+          <li>Бояться ошибок — они часть обучения</li>
+        </ul>
+      </div>
+      <div class="box blue">
+        <div class="label">Золотое правило</div>
+        <p>Программирование — это <strong>навык</strong>. Его можно освоить только через <strong>практику</strong>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Resources -->
+<section>
+  <h1>📚 Полезные ресурсы</h1>
+  <table>
+    <thead><tr><th>Ресурс</th><th>Описание</th></tr></thead>
+    <tbody>
+      <tr><td>📖 <a href="https://docs.oracle.com/en/java/" target="_blank">docs.oracle.com/java</a></td><td>Официальная документация Java</td></tr>
+      <tr><td>🎓 <a href="https://javarush.com" target="_blank">javarush.com</a></td><td>Практические задания с геймификацией</td></tr>
+      <tr><td>📘 «Head First Java» — Kathy Sierra</td><td>Лучшая книга для начинающих</td></tr>
+      <tr><td>📗 «Clean Code» — Robert C. Martin</td><td>Принципы хорошего кода</td></tr>
+      <tr><td>🌐 <a href="https://baeldung.com" target="_blank">baeldung.com</a></td><td>Туториалы и статьи по Java</td></tr>
+    </tbody>
+  </table>
+  <div class="box green" style="margin-top:.6em;">
+    <div class="label">Совет</div>
+    <p>Начните с <strong>JavaRush</strong> — задания прямо в браузере, не нужно ничего настраивать!</p>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="slide-title" data-background-gradient="linear-gradient(145deg,#0f0f1a 0%,#0f3460 100%)">
+  <h1>Поехали! 🚀☕</h1>
+  <h2>Лекция 0 из 19 · Семестр 2 · Java OOP</h2>
+  <p style="margin-top:.8em; color:var(--dim); font-size:.85em;">
+    <strong style="color:var(--text);">Следующая лекция →</strong><br/>
+    <span class="muted">Лекция 1: Введение в ООП · История языков · Парадигмы программирования</span>
+  </p>
+  <div style="margin-top:.8em;">
+    <span class="badge">Java</span>
+    <span class="badge blue">Виктор</span>
+    <span class="badge dark">Многоуважаемая Анастасия Юрьевна</span>
+  </div>
+</section>
+
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/zoom/zoom.js"></script>
+<script>
+  Reveal.initialize({
+    hash:true, slideNumber:'c/t', progress:true, controls:true, center:false,
+    transition:'slide', transitionSpeed:'fast', backgroundTransition:'fade',
+    width:1280, height:720, margin:0.04,
+    plugins:[RevealHighlight, RevealNotes, RevealZoom],
+  });
+</script>
+<style>
+.lec-nav{position:fixed;bottom:0;left:0;right:0;z-index:9999;display:none;align-items:center;justify-content:center;gap:.75rem;padding:.75rem 1.5rem;background:rgba(15,15,26,.92);backdrop-filter:blur(12px);border-top:1px solid #30363d;font-family:'Inter',sans-serif;}
+.lec-nav.visible{display:flex;}
+.lec-nav a,.lec-nav button{display:inline-flex;align-items:center;gap:.4rem;padding:.45em 1.1em;border-radius:8px;font-size:.78rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all .15s;border:1px solid #30363d;background:#1a1a2e;color:#cbd5e0;}
+.lec-nav a:hover,.lec-nav button:hover{border-color:#58a6ff;color:#58a6ff;background:#0f0f1a;}
+.lec-nav .nav-next{background:#e94560;border-color:#e94560;color:#fff;}
+.lec-nav .nav-next:hover{background:#c73050;border-color:#c73050;color:#fff;}
+.lec-nav .nav-home{border-color:#30363d;}
+.lec-nav .nav-sep{width:1px;height:24px;background:#30363d;}
+.lec-nav .nav-label{font-size:.68rem;color:#8b949e;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;}
+</style>
+<div class="lec-nav" id="lecNav">
+  
+  <a href="../index.html" class="nav-home">&#9776; К списку</a>
+  <span class="nav-label">Лекция 0 из 19</span>
+  <div class="nav-sep"></div><a href="../lecture-01-oop-paradigms/lecture-01-reveal.html" class="nav-next">Парадигмы программирования &#8594;</a>
+</div>
+<script>
+(function(){
+  function checkLastSlide(){
+    if(!window.Reveal) return;
+    var idx   = Reveal.getIndices();
+    var total = Reveal.getTotalSlides();
+    var cur   = Reveal.getSlidePastCount() + 1;
+    var nav   = document.getElementById('lecNav');
+    if(!nav) return;
+    // show on last slide
+    if(cur >= total) nav.classList.add('visible');
+    else             nav.classList.remove('visible');
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    if(window.Reveal){
+      Reveal.on('slidechanged', checkLastSlide);
+      Reveal.on('ready',        checkLastSlide);
+    } else {
+      // wait for Reveal to init
+      window.addEventListener('load', function(){
+        if(window.Reveal){
+          Reveal.on('slidechanged', checkLastSlide);
+          Reveal.on('ready',        checkLastSlide);
+        }
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>
+

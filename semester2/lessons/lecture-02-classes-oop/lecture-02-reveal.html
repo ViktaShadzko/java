@@ -1,0 +1,665 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Лекция 2 — Классы и объекты. Инкапсуляция и Наследование</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--red:#e94560;--blue:#58a6ff;--green:#56d364;--orange:#ffa657;--purple:#d2a8ff;--bg:#0f0f1a;--bg2:#1a1a2e;--bg3:#16213e;--text:#e2e8f0;--muted:#a0aec0;--dim:#cbd5e0;}
+    .reveal-viewport{background:var(--bg);}
+    .reveal{font-family:'Inter',sans-serif;font-size:23px;color:var(--text);}
+    .reveal h1{font-weight:800;color:var(--text);font-size:1.55em;border-bottom:3px solid var(--red);padding-bottom:.2em;margin-bottom:.4em;text-transform:none;letter-spacing:-.01em;}
+    .reveal h2{font-weight:800;color:var(--red);font-size:1.2em;text-transform:none;}
+    .reveal h3{font-weight:600;color:var(--blue);font-size:.86em;text-transform:none;margin:.3em 0 .15em;}
+    .reveal p,.reveal li{color:var(--dim);line-height:1.6;}
+    .reveal strong{color:var(--orange);}
+    .reveal a{color:var(--blue);}
+    .slide-title{background:linear-gradient(145deg,var(--bg) 0%,var(--bg3) 100%)!important;}
+    .slide-title h1{font-size:1.9em;color:var(--red);border:none;padding:0;}
+    .slide-title h2{color:var(--muted);font-size:.95em;font-weight:400;}
+    .slide-section{background:linear-gradient(135deg,var(--bg) 0%,var(--bg3) 100%)!important;}
+    .slide-section h2{font-size:1.8em;font-weight:800;color:var(--red);border-left:6px solid var(--red);padding-left:.4em;}
+    .slide-section p{color:var(--muted);font-size:.8em;}
+    .badge{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:.5em;padding:.3em 1em;border-radius:20px;margin:.25em .2em 0;}
+    .badge.blue{background:var(--blue);}.badge.green{background:#238636;}.badge.dark{background:var(--bg2);border:1px solid var(--blue);color:var(--blue);}
+    .cols{display:grid;grid-template-columns:1fr 1fr;gap:.9em;}
+    .cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.7em;}
+    .card{background:var(--bg2);border-radius:10px;padding:.55em .8em;border-top:3px solid var(--red);}
+    .card h3{font-size:.78em;margin:0 0 .2em;}.card p{font-size:.68em;color:var(--muted);margin:0;}
+    .card.red{border-color:var(--red);}.card.red h3{color:var(--red);}
+    .card.blue{border-color:var(--blue);}.card.blue h3{color:var(--blue);}
+    .card.green{border-color:var(--green);}.card.green h3{color:var(--green);}
+    .card.orange{border-color:var(--orange);}.card.orange h3{color:var(--orange);}
+    .card.purple{border-color:var(--purple);}.card.purple h3{color:var(--purple);}
+    .box{background:var(--bg2);border:1px solid var(--red);border-radius:8px;padding:.38em .75em;margin:.35em 0;}
+    .box .label{font-size:.54em;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--red);margin-bottom:.1em;}
+    .box p{font-size:.73em;margin:0;color:var(--text);}
+    .box.blue{border-color:var(--blue);}.box.blue .label{color:var(--blue);}
+    .box.green{border-color:var(--green);}.box.green .label{color:var(--green);}
+    .box.orange{border-color:var(--orange);}.box.orange .label{color:var(--orange);}
+    .pros{background:#0d2818;border:1px solid #238636;border-radius:8px;padding:.45em .75em;}
+    .cons{background:#2d1117;border:1px solid #da3633;border-radius:8px;padding:.45em .75em;}
+    .pros h3{color:var(--green)!important;font-size:.78em;margin-bottom:.18em;}
+    .cons h3{color:#f85149!important;font-size:.78em;margin-bottom:.18em;}
+    .pros li::marker{color:var(--green);}.cons li::marker{color:#f85149;}
+    .pros li,.cons li{font-size:.73em;color:var(--dim);}
+    .reveal table{width:100%;border-collapse:collapse;font-size:.7em;}
+    .reveal th{background:var(--bg2);color:var(--red);padding:.32em .55em;text-align:left;border:1px solid #30363d;}
+    .reveal td{padding:.28em .55em;border:1px solid #30363d;color:var(--dim);}
+    .reveal tr:nth-child(even) td{background:var(--bg2);}
+    .reveal pre{border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.5);font-size:.57em;margin:.3em 0;width:100%;}
+    .reveal code{font-family:'JetBrains Mono',monospace;}
+    .reveal :not(pre)>code{background:var(--bg2);color:var(--orange);padding:.1em .3em;border-radius:4px;font-size:.8em;}
+    blockquote{border-left:4px solid var(--red);padding:.35em .8em;background:var(--bg2);border-radius:0 8px 8px 0;font-style:italic;color:var(--muted);margin:.4em 0;font-size:.88em;}
+    blockquote strong{color:var(--red);}
+    .warn{background:#2d1a00;border:1px solid #9e6a03;border-radius:8px;padding:.4em .75em;margin:.35em 0;font-size:.73em;color:var(--dim);}
+    .warn .label{color:var(--orange);font-weight:700;font-size:.85em;margin-bottom:.1em;}
+    .checklist{list-style:none;padding-left:0;}
+    .checklist li::before{content:'✅  ';}
+    .checklist li{margin-bottom:.25em;font-size:.78em;color:var(--dim);}
+    .small{font-size:.73em!important;}.muted{color:var(--muted)!important;}
+    .reveal .progress{color:var(--red);}.reveal .controls{color:var(--red);}
+    .reveal .slide-number{color:#4a5568;font-size:.65em;}
+  </style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+
+<!-- TITLE -->
+<section class="slide-title" data-background-gradient="linear-gradient(145deg,#0f0f1a 0%,#0f3460 100%)">
+  <h1>☕ Классы и объекты</h1>
+  <h2>Инкапсуляция и Наследование</h2>
+  <p class="muted" style="margin-top:.5em;">Семестр 2 · Лекция 2 из 19 · Java OOP</p>
+  <div style="margin-top:.7em;"><span class="badge">ООП</span><span class="badge blue">Классы</span><span class="badge green">Наследование</span></div>
+</section>
+
+<!-- PLAN -->
+<section>
+  <h1>🗂️ План лекции</h1>
+  <div class="cols">
+    <ol style="font-size:.8em;">
+      <li>Класс и объект — ключевые понятия</li>
+      <li>Поля, методы, конструкторы</li>
+      <li>Ключевое слово <code>this</code></li>
+      <li>Инкапсуляция — зачем скрывать данные?</li>
+      <li>Геттеры и сеттеры</li>
+    </ol>
+    <ol start="6" style="font-size:.8em;">
+      <li>Наследование — повторное использование</li>
+      <li>Ключевое слово <code>super</code></li>
+      <li>Переопределение методов <code>@Override</code></li>
+      <li>Финальные классы и методы <code>final</code></li>
+      <li>Итоги и домашнее задание</li>
+    </ol>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>1. Класс и объект</h2>
+  <p>Чертёж и конкретный экземпляр</p>
+</section>
+
+<section>
+  <h1>Класс — чертёж. Объект — экземпляр</h1>
+  <div class="box blue" style="margin-bottom:.4em;">
+    <div class="label">Аналогия</div>
+    <p>Класс <code>Автомобиль</code> — техническая документация. Объект <code>myCar</code> — конкретный автомобиль во дворе.</p>
+  </div>
+  <div class="cols">
+    <pre><code class="language-java">// Класс — чертёж
+public class Car {
+    String brand;
+    String model;
+    int    year;
+    double speed;
+
+    void accelerate(double amount) {
+        speed += amount;
+        System.out.println(brand +
+          " разгоняется до " + speed);
+    }
+    void brake() {
+        speed = 0;
+        System.out.println(brand +
+          " остановился");
+    }
+}</code></pre>
+    <pre><code class="language-java">// Объекты — конкретные экземпляры
+Car car1 = new Car();
+car1.brand = "Toyota";
+car1.model = "Camry";
+car1.year  = 2023;
+
+Car car2 = new Car();
+car2.brand = "BMW";
+car2.model = "M3";
+
+car1.accelerate(60);  // Toyota → 60
+car2.accelerate(100); // BMW → 100
+car1.brake();         // Toyota → 0
+
+System.out.println(car1.speed); // 0.0
+System.out.println(car2.speed); // 100.0
+// Объекты независимы!</code></pre>
+  </div>
+</section>
+
+<!-- SECTION 2 -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>2. Поля, методы, конструкторы</h2>
+  <p>Структура класса Java</p>
+</section>
+
+<section>
+  <h1>Структура класса</h1>
+  <div class="cols">
+    <pre><code class="language-java">public class Student {
+    // ── Поля (состояние) ───────────
+    private String name;
+    private int    age;
+    private double gpa;
+
+    // ── Конструктор ────────────────
+    public Student(String name,
+                   int age,
+                   double gpa) {
+        this.name = name;
+        this.age  = age;
+        this.gpa  = gpa;
+    }
+
+    // ── Методы (поведение) ─────────
+    public void study() {
+        gpa = Math.min(10.0, gpa + 0.1);
+        System.out.println(name +
+          " учится, GPA: " + gpa);
+    }
+
+    public String getSummary() {
+        return name + " | " + age +
+          " лет | GPA: " + gpa;
+    }
+}</code></pre>
+    <div>
+      <div class="cols3" style="margin-bottom:.5em;">
+        <div class="card blue"><h3>📦 Поля</h3><p>Состояние объекта. Обычно <code>private</code>.</p></div>
+        <div class="card orange"><h3>🔧 Конструктор</h3><p>Создаёт объект. Имя = имя класса.</p></div>
+        <div class="card green"><h3>⚙️ Методы</h3><p>Поведение объекта.</p></div>
+      </div>
+      <pre><code class="language-java">// Создание объектов
+Student s1 = new Student(
+    "Иван", 20, 8.5);
+Student s2 = new Student(
+    "Мария", 21, 9.2);
+
+s1.study();
+System.out.println(s1.getSummary());
+// Иван | 20 лет | GPA: 8.6</code></pre>
+      <div class="box orange" style="margin-top:.4em;">
+        <div class="label">static vs instance</div>
+        <p><code>static</code> — одно на весь класс.<br/>Без <code>static</code> — у каждого объекта своё.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Constructors overloading -->
+<section>
+  <h1>Перегрузка конструкторов и <code>this()</code></h1>
+  <div class="cols">
+    <pre><code class="language-java">public class User {
+    private String name;
+    private String email;
+    private int    age;
+
+    // Конструктор 1: только имя
+    public User(String name) {
+        this(name, "", 0); // ← вызов 3
+    }
+
+    // Конструктор 2: имя + email
+    public User(String name,
+                String email) {
+        this(name, email, 0); // ← вызов 3
+    }
+
+    // Конструктор 3: всё
+    public User(String name,
+                String email,
+                int age) {
+        this.name  = name;
+        this.email = email;
+        this.age   = age;
+    }
+}</code></pre>
+    <div>
+      <div class="box blue" style="margin-bottom:.4em;">
+        <div class="label">this() — вызов другого конструктора</div>
+        <p>Должен быть ПЕРВОЙ строкой конструктора. Избегает дублирования кода.</p>
+      </div>
+      <pre><code class="language-java">User u1 = new User("Иван");
+User u2 = new User("Мария",
+                   "m@mail.ru");
+User u3 = new User("Пётр",
+                   "p@mail.ru",
+                   25);</code></pre>
+      <div class="box" style="margin-top:.4em;">
+        <div class="label">this.field vs this()</div>
+        <p><code>this.name</code> — ссылка на поле объекта<br/><code>this()</code> — вызов другого конструктора</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3 -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>3. Инкапсуляция</h2>
+  <p>Скрываем детали — открываем интерфейс</p>
+</section>
+
+<section>
+  <h1>Инкапсуляция — зачем?</h1>
+  <div class="cols">
+    <div>
+      <pre><code class="language-java">// ❌ Без инкапсуляции
+public class BadAccount {
+    public double balance; // всё открыто!
+}
+
+BadAccount acc = new BadAccount();
+acc.balance = -99999; // никто не мешает!</code></pre>
+      <pre><code class="language-java">// ✅ С инкапсуляцией
+public class BankAccount {
+    private double balance; // скрыто!
+    private String owner;
+
+    public BankAccount(String owner,
+                       double amount) {
+        this.owner = owner;
+        if (amount < 0) throw new
+            IllegalArgumentException(
+              "Баланс не может быть < 0");
+        this.balance = amount;
+    }
+
+    public void deposit(double amount) {
+        if (amount <= 0) throw new
+            IllegalArgumentException(
+              "Сумма должна быть > 0");
+        balance += amount;
+    }
+
+    public void withdraw(double amount) {
+        if (amount > balance)
+            throw new IllegalStateException(
+              "Недостаточно средств");
+        balance -= amount;
+    }
+
+    public double getBalance() {
+        return balance; // только чтение
+    }
+}</code></pre>
+    </div>
+    <div>
+      <table>
+        <thead><tr><th>Модификатор</th><th>Класс</th><th>Пакет</th><th>Наследник</th><th>Все</th></tr></thead>
+        <tbody>
+          <tr><td><code>private</code></td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+          <tr><td><code>package</code></td><td>✅</td><td>✅</td><td>❌</td><td>❌</td></tr>
+          <tr><td><code>protected</code></td><td>✅</td><td>✅</td><td>✅</td><td>❌</td></tr>
+          <tr><td><code>public</code></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        </tbody>
+      </table>
+      <div class="box green" style="margin-top:.5em;">
+        <div class="label">Правило</div>
+        <p>Поля — <strong>всегда private</strong>.<br/>Доступ — через методы (геттеры/сеттеры).</p>
+      </div>
+      <div class="pros" style="margin-top:.4em;">
+        <h3>✅ Зачем инкапсуляция:</h3>
+        <ul>
+          <li>Валидация данных</li>
+          <li>Скрытие реализации</li>
+          <li>Защита от некорректных изменений</li>
+          <li>Легче рефакторинг</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4 -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>4. Наследование</h2>
+  <p>Повторное использование кода через иерархию</p>
+</section>
+
+<section>
+  <h1>Наследование — <code>extends</code></h1>
+  <div class="cols">
+    <pre><code class="language-java">// ── Родительский класс ─────────────
+public class Animal {
+    protected String name;
+    protected int    energy;
+
+    public Animal(String name, int energy) {
+        this.name   = name;
+        this.energy = energy;
+    }
+
+    public void eat() {
+        energy += 20;
+        System.out.println(name +
+          " ест [энергия: " + energy + "]");
+    }
+
+    public void sleep() {
+        energy += 30;
+        System.out.println(name +
+          " спит [энергия: " + energy + "]");
+    }
+
+    public String getInfo() {
+        return name + " (энергия: "+energy+")";
+    }
+}
+
+// ── Дочерние классы ────────────────
+public class Dog extends Animal {
+    private String breed;
+
+    public Dog(String name, String breed) {
+        super(name, 100); // вызов родителя!
+        this.breed = breed;
+    }
+
+    public void fetch() {   // свой метод
+        energy -= 15;
+        System.out.println(name +
+          " приносит мяч 🎾");
+    }
+
+    @Override               // переопределение
+    public String getInfo() {
+        return super.getInfo() +
+          " порода: " + breed;
+    }
+}</code></pre>
+    <div>
+      <pre><code class="language-java">public class Cat extends Animal {
+    private boolean isIndoor;
+
+    public Cat(String name,
+               boolean isIndoor) {
+        super(name, 70);
+        this.isIndoor = isIndoor;
+    }
+
+    public void purr() {
+        System.out.println(name +
+          " мурчит 😸");
+    }
+}
+
+// ── Использование ──────────────────
+Dog dog = new Dog("Рекс", "Лабрадор");
+Cat cat = new Cat("Барсик", true);
+
+dog.eat();    // из Animal
+dog.sleep();  // из Animal
+dog.fetch();  // свой метод Dog
+
+cat.eat();    // из Animal
+cat.purr();   // свой метод Cat
+
+System.out.println(dog.getInfo());
+// Рекс (энергия: 135) порода: Лабрадор</code></pre>
+      <div class="box orange" style="margin-top:.4em;">
+        <div class="label">Ключевые слова</div>
+        <p><code>extends</code> — наследование<br/>
+        <code>super()</code> — конструктор родителя<br/>
+        <code>super.method()</code> — метод родителя<br/>
+        <code>@Override</code> — переопределение</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Override -->
+<section>
+  <h1>@Override — переопределение методов</h1>
+  <div class="cols">
+    <pre><code class="language-java">public class Shape {
+    protected String color;
+
+    public Shape(String color) {
+        this.color = color;
+    }
+
+    public double area() {
+        return 0; // базовая реализация
+    }
+
+    public String describe() {
+        return color + " фигура, " +
+               "площадь: " + area();
+    }
+}
+
+public class Circle extends Shape {
+    private double radius;
+
+    public Circle(String color,
+                  double radius) {
+        super(color);
+        this.radius = radius;
+    }
+
+    @Override
+    public double area() {
+        return Math.PI * radius * radius;
+    }
+}
+
+public class Rectangle extends Shape {
+    private double w, h;
+
+    public Rectangle(String c,
+                     double w, double h) {
+        super(c);
+        this.w = w; this.h = h;
+    }
+
+    @Override
+    public double area() {
+        return w * h;
+    }
+}</code></pre>
+    <div>
+      <pre><code class="language-java">// ── Полиморфизм! ───────────────────
+Shape[] shapes = {
+    new Circle("красный", 5),
+    new Rectangle("синий", 4, 6),
+    new Circle("зелёный", 3)
+};
+
+for (Shape s : shapes) {
+    System.out.println(s.describe());
+}
+// красный фигура, площадь: 78.54
+// синий фигура, площадь: 24.00
+// зелёный фигура, площадь: 28.27</code></pre>
+      <div class="warn" style="margin-top:.5em;">
+        <div class="label">⚠️ Правила @Override</div>
+        Сигнатура должна совпадать точно.<br/>
+        Нельзя сузить модификатор доступа.<br/>
+        Нельзя бросать новые checked исключения.
+      </div>
+      <div class="box green" style="margin-top:.4em;">
+        <div class="label">Зачем @Override</div>
+        <p>Компилятор проверит что метод действительно существует в родителе.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- final -->
+<section>
+  <h1><code>final</code> — запрет изменений</h1>
+  <div class="cols">
+    <pre><code class="language-java">// final класс — нельзя наследовать
+public final class ImmutablePoint {
+    private final double x;
+    private final double y;
+
+    public ImmutablePoint(double x,
+                          double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public double getX() { return x; }
+    public double getY() { return y; }
+
+    public ImmutablePoint translate(
+            double dx, double dy) {
+        // создаём НОВЫЙ объект
+        return new ImmutablePoint(
+                x + dx, y + dy);
+    }
+}
+// class ExtendedPoint
+//   extends ImmutablePoint {} // ❌ ERROR</code></pre>
+    <div>
+      <pre><code class="language-java">public class Account {
+    // final поле — задаётся один раз
+    private final String accountId;
+    private double balance;
+
+    public Account(String id) {
+        this.accountId = id; // один раз!
+        // accountId = "other"; // ❌ ERROR
+    }
+
+    // final метод — нельзя переопределить
+    public final String getId() {
+        return accountId;
+    }
+}</code></pre>
+      <table style="margin-top:.4em;">
+        <thead><tr><th>final на</th><th>Значение</th></tr></thead>
+        <tbody>
+          <tr><td><code>final class</code></td><td>Нельзя наследовать</td></tr>
+          <tr><td><code>final method</code></td><td>Нельзя переопределить</td></tr>
+          <tr><td><code>final field</code></td><td>Нельзя изменить после init</td></tr>
+          <tr><td><code>final variable</code></td><td>Нельзя переприсвоить</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Summary -->
+<section>
+  <h1>📌 Итоги лекции</h1>
+  <div class="cols">
+    <ul class="checklist">
+      <li><strong>Класс</strong> — чертёж. <strong>Объект</strong> — экземпляр.</li>
+      <li>Поля хранят <strong>состояние</strong>, методы — <strong>поведение</strong>.</li>
+      <li><strong>Инкапсуляция</strong>: поля private, доступ через методы.</li>
+      <li><strong>Конструктор</strong> = имя класса. <code>this()</code> — цепочка.</li>
+      <li><strong>Наследование</strong> через <code>extends</code>.</li>
+      <li><code>super()</code> — вызов родительского конструктора.</li>
+      <li><code>@Override</code> — переопределение метода.</li>
+      <li><code>final</code> — запрет наследования/переопределения/изменения.</li>
+    </ul>
+    <div>
+      <div class="box">
+        <div class="label">Вопросы для самопроверки</div>
+        <p style="font-size:.72em;">
+          1. Чем класс отличается от объекта?<br/>
+          2. Зачем нужна инкапсуляция?<br/>
+          3. Что делает <code>super()</code>?<br/>
+          4. Почему рекомендуется <code>@Override</code>?<br/>
+          5. Что значит <code>final class</code>?
+        </p>
+      </div>
+      <div class="card orange" style="margin-top:.5em;">
+        <h3>📝 Домашнее задание</h3>
+        <p>Создать иерархию: <code>Vehicle → Car, Truck, Motorcycle</code><br/>
+        Общие поля: марка, скорость, топливо.<br/>
+        Каждый класс: свой метод и переопределение <code>toString()</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="slide-title" data-background-gradient="linear-gradient(145deg,#0f0f1a 0%,#0f3460 100%)">
+  <h1>Спасибо! ☕</h1>
+  <h2>Лекция 2 из 19 · Классы и объекты</h2>
+  <p style="margin-top:.7em;color:var(--dim);font-size:.82em;">
+    <strong style="color:var(--text);">Следующая →</strong>
+    <span class="muted"> Лекция 3: Интерфейсы и абстрактные классы. Полиморфизм</span>
+  </p>
+  <div style="margin-top:.7em;"><span class="badge">Java</span><span class="badge blue">ООП</span><span class="badge green">Лекция 2</span></div>
+</section>
+
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/zoom/zoom.js"></script>
+<script>Reveal.initialize({hash:true,slideNumber:'c/t',progress:true,controls:true,center:false,transition:'slide',transitionSpeed:'fast',backgroundTransition:'fade',width:1280,height:720,margin:0.04,plugins:[RevealHighlight,RevealNotes,RevealZoom]});</script>
+<style>
+.lec-nav{position:fixed;bottom:0;left:0;right:0;z-index:9999;display:none;align-items:center;justify-content:center;gap:.75rem;padding:.75rem 1.5rem;background:rgba(15,15,26,.92);backdrop-filter:blur(12px);border-top:1px solid #30363d;font-family:'Inter',sans-serif;}
+.lec-nav.visible{display:flex;}
+.lec-nav a,.lec-nav button{display:inline-flex;align-items:center;gap:.4rem;padding:.45em 1.1em;border-radius:8px;font-size:.78rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all .15s;border:1px solid #30363d;background:#1a1a2e;color:#cbd5e0;}
+.lec-nav a:hover,.lec-nav button:hover{border-color:#58a6ff;color:#58a6ff;background:#0f0f1a;}
+.lec-nav .nav-next{background:#e94560;border-color:#e94560;color:#fff;}
+.lec-nav .nav-next:hover{background:#c73050;border-color:#c73050;color:#fff;}
+.lec-nav .nav-home{border-color:#30363d;}
+.lec-nav .nav-sep{width:1px;height:24px;background:#30363d;}
+.lec-nav .nav-label{font-size:.68rem;color:#8b949e;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;}
+</style>
+<div class="lec-nav" id="lecNav">
+  <a href="../lecture-01-oop-paradigms/lecture-01-reveal.html" class="nav-prev">&#8592; Парадигмы программирования</a><div class="nav-sep"></div>
+  <a href="../index.html" class="nav-home">&#9776; К списку</a>
+  <span class="nav-label">Лекция 2 из 19</span>
+  <div class="nav-sep"></div><a href="../lecture-03-interfaces-polymorphism/lecture-03-reveal.html" class="nav-next">Интерфейсы и полиморфизм &#8594;</a>
+</div>
+<script>
+(function(){
+  function checkLastSlide(){
+    if(!window.Reveal) return;
+    var idx   = Reveal.getIndices();
+    var total = Reveal.getTotalSlides();
+    var cur   = Reveal.getSlidePastCount() + 1;
+    var nav   = document.getElementById('lecNav');
+    if(!nav) return;
+    // show on last slide
+    if(cur >= total) nav.classList.add('visible');
+    else             nav.classList.remove('visible');
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    if(window.Reveal){
+      Reveal.on('slidechanged', checkLastSlide);
+      Reveal.on('ready',        checkLastSlide);
+    } else {
+      // wait for Reveal to init
+      window.addEventListener('load', function(){
+        if(window.Reveal){
+          Reveal.on('slidechanged', checkLastSlide);
+          Reveal.on('ready',        checkLastSlide);
+        }
+      });
+    }
+  });
+})();
+</script>
+</body></html>
+

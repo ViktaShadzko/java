@@ -1,0 +1,264 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Лекция 13 — Слоистая архитектура</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>    :root{--red:#e94560;--blue:#58a6ff;--green:#56d364;--orange:#ffa657;--bg:#0f0f1a;--bg2:#1a1a2e;--bg3:#16213e;--text:#e2e8f0;--muted:#a0aec0;--dim:#cbd5e0;}
+    .reveal-viewport{background:var(--bg);}.reveal{font-family:'Inter',sans-serif;font-size:23px;color:var(--text);}
+    .reveal h1{font-weight:800;color:var(--text);font-size:1.55em;border-bottom:3px solid var(--red);padding-bottom:.2em;margin-bottom:.4em;text-transform:none;}
+    .reveal h2{font-weight:800;color:var(--red);font-size:1.2em;text-transform:none;}
+    .reveal h3{font-weight:600;color:var(--blue);font-size:.86em;text-transform:none;margin:.3em 0 .15em;}
+    .reveal p,.reveal li{color:var(--dim);line-height:1.6;}.reveal strong{color:var(--orange);}
+    .slide-title{background:linear-gradient(145deg,var(--bg) 0%,var(--bg3) 100%)!important;}
+    .slide-title h1{font-size:1.9em;color:var(--red);border:none;padding:0;}
+    .slide-title h2{color:var(--muted);font-size:.95em;font-weight:400;}
+    .ss h2{font-size:1.8em;font-weight:800;color:var(--red);border-left:6px solid var(--red);padding-left:.4em;margin-bottom:.3em;}
+    .ss p{color:var(--muted);font-size:.8em;}
+    .badge{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:.5em;padding:.3em 1em;border-radius:20px;margin:.25em .2em 0;}
+    .badge.b{background:var(--blue);}.badge.g{background:#238636;}
+    .cols{display:grid;grid-template-columns:1fr 1fr;gap:.9em;}
+    .cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.7em;}
+    .card{background:var(--bg2);border-radius:10px;padding:.55em .8em;border-top:3px solid var(--red);}
+    .card h3{font-size:.78em;margin:0 0 .2em;}.card p{font-size:.68em;color:var(--muted);margin:0;}
+    .cb{border-color:var(--blue)!important;}.cb h3{color:var(--blue)!important;}
+    .cg{border-color:var(--green)!important;}.cg h3{color:var(--green)!important;}
+    .co{border-color:var(--orange)!important;}.co h3{color:var(--orange)!important;}
+    .box{background:var(--bg2);border:1px solid var(--red);border-radius:8px;padding:.38em .75em;margin:.35em 0;}
+    .box .lbl{font-size:.54em;font-weight:700;text-transform:uppercase;color:var(--red);margin-bottom:.1em;}
+    .box p{font-size:.73em;margin:0;color:var(--text);}
+    .bb{border-color:var(--blue)!important;}.bb .lbl{color:var(--blue)!important;}
+    .bg{border-color:var(--green)!important;}.bg .lbl{color:var(--green)!important;}
+    .bo{border-color:var(--orange)!important;}.bo .lbl{color:var(--orange)!important;}
+    .reveal table{width:100%;border-collapse:collapse;font-size:.7em;}
+    .reveal th{background:var(--bg2);color:var(--red);padding:.32em .55em;text-align:left;border:1px solid #30363d;}
+    .reveal td{padding:.28em .55em;border:1px solid #30363d;color:var(--dim);}
+    .reveal tr:nth-child(even) td{background:var(--bg2);}
+    .reveal pre{border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.5);font-size:.57em;margin:.3em 0;width:100%;}
+    .reveal code{font-family:'JetBrains Mono',monospace;}
+    .reveal :not(pre)>code{background:var(--bg2);color:var(--orange);padding:.1em .3em;border-radius:4px;font-size:.8em;}
+    blockquote{border-left:4px solid var(--red);padding:.35em .8em;background:var(--bg2);border-radius:0 8px 8px 0;font-style:italic;color:var(--muted);margin:.4em 0;font-size:.88em;}
+    .cl{list-style:none;padding-left:0;}.cl li::before{content:'✅  ';}.cl li{margin-bottom:.25em;font-size:.78em;color:var(--dim);}
+    .muted{color:var(--muted)!important;}
+    .reveal .progress{color:var(--red);}.reveal .controls{color:var(--red);}.reveal .slide-number{color:#4a5568;font-size:.65em;}</style>
+</head>
+<body><div class="reveal"><div class="slides">
+<section class="slide-title" data-background-gradient="linear-gradient(145deg,#0f0f1a 0%,#0f3460 100%)">
+  <h1>☕ Слоистая архитектура</h1><h2>Repository, Service, Controller, SOLID</h2>
+  <p style="color:#a0aec0;margin-top:.5em;">Семестр 2 · Лекция 13 из 19</p>
+</section>
+<section><h1>🗂️ Слоистая архитектура — план</h1>
+  <div class="cols">
+    <ol style="font-size:.8em;"><li>Зачем нужна архитектура?</li><li>Layered Architecture</li><li>Model / Entity</li><li>Repository — CRUD</li></ol>
+    <ol start="5" style="font-size:.8em;"><li>Service — бизнес-логика</li><li>Controller — точка входа</li><li>Dependency Injection</li><li>SOLID кратко</li></ol>
+  </div>
+</section>
+<section><h1>Без архитектуры vs Слоистая</h1>
+  <div class="cols">
+    <pre><code class="language-java">// ❌ "Большой комок грязи"
+public class App {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String name = sc.nextLine();
+        if (name == null || name.isBlank()) {
+            System.out.println("Ошибка!"); return;
+        }
+        // Напрямую к БД в main!
+        Connection conn = DriverManager
+            .getConnection("jdbc:...");
+        PreparedStatement ps = conn
+            .prepareStatement("SELECT * FROM ...");
+        // Бизнес-логика тут же
+        // Форматирование вывода тут же
+        // Невозможно тестировать!
+    }
+}</code></pre>
+    <pre><code class="language-text">✅ Layered Architecture:
+┌──────────────────────────┐
+│     Controller           │  ← принять запрос
+├──────────────────────────┤
+│     Service              │  ← бизнес-логика
+├──────────────────────────┤
+│     Repository           │  ← CRUD данных
+├──────────────────────────┤
+│     Database / Storage   │
+└──────────────────────────┘
+Правило: каждый слой зависит
+только от слоя НИЖЕ!
+Controller → Service → Repository → DB</code></pre>
+  </div>
+</section>
+<section><h1>Repository, Service, Controller</h1>
+  <div class="cols">
+    <pre><code class="language-java">// ── Repository — только CRUD ──────────
+public interface BookRepository {
+    Book save(Book book);
+    Optional&lt;Book&gt; findById(Long id);
+    List&lt;Book&gt; findAll();
+    List&lt;Book&gt; findByAuthor(String author);
+    void delete(Long id);
+}
+// ── Service — бизнес-логика ───────────
+public class BookService {
+    // Зависимость через ИНТЕРФЕЙС!
+    private final BookRepository repo;
+    public BookService(BookRepository r) {
+        this.repo = Objects.requireNonNull(r);
+    }
+    public Book addBook(String title,
+                        double price) {
+        // Валидация — это бизнес-правило!
+        if (title == null || title.isBlank())
+            throw new ValidationException(
+                "Название обязательно");
+        if (price &lt; 0)
+            throw new ValidationException(
+                "Цена не может быть < 0");
+        return repo.save(new Book(title, price));
+    }
+    public void borrowBook(Long bookId,
+                           String reader) {
+        Book book = repo.findById(bookId)
+            .orElseThrow(() ->
+                new BookNotFoundException(bookId));
+        if (!book.isAvailable())
+            throw new BookNotAvailableException();
+        book.setAvailable(false);
+        repo.save(book);
+    }
+}</code></pre>
+    <pre><code class="language-java">// ── Controller — тонкий слой ──────────
+public class BookController {
+    private final BookService service;
+    public BookController(BookService s) {
+        this.service = s;
+    }
+    public void addBook(String title,
+                        double price) {
+        try {
+            Book b = service.addBook(title,price);
+            System.out.println("✅ "+b);
+        } catch (ValidationException e) {
+            System.out.println("❌ "+e.getMessage());
+        }
+    }
+}
+// ── Main — сборка (Composition Root) ──
+public class Main {
+    public static void main(String[] args) {
+        // 1. Создаём инфраструктуру
+        BookRepository repo =
+            new InMemoryBookRepository();
+        // 2. Внедряем в сервис
+        BookService service = new BookService(repo);
+        // 3. Внедряем в контроллер
+        BookController ctrl =
+            new BookController(service);
+        ctrl.addBook("Java", 450.0);
+        ctrl.addBook("", 0.0); // ❌ валидация
+    }
+}</code></pre>
+  </div>
+</section>
+<section><h1>SOLID кратко</h1>
+  <table>
+    <thead><tr><th>Принцип</th><th>Расшифровка</th><th>Суть</th></tr></thead>
+    <tbody>
+      <tr><td><strong>S</strong></td><td>Single Responsibility</td><td>Один класс — одна ответственность</td></tr>
+      <tr><td><strong>O</strong></td><td>Open/Closed</td><td>Открыт для расширения, закрыт для изменения</td></tr>
+      <tr><td><strong>L</strong></td><td>Liskov Substitution</td><td>Наследник заменяем родителем</td></tr>
+      <tr><td><strong>I</strong></td><td>Interface Segregation</td><td>Много малых интерфейсов лучше одного большого</td></tr>
+      <tr><td><strong>D</strong></td><td>Dependency Inversion</td><td>Зависеть от абстракций, не от реализаций</td></tr>
+    </tbody>
+  </table>
+  <div class="cols" style="margin-top:.5em;">
+    <pre><code class="language-java">// ❌ D — зависимость от реализации
+public class BookService {
+    private InMemoryBookRepository repo =
+        new InMemoryBookRepository();
+    // нельзя поменять без изменения класса!
+}</code></pre>
+    <pre><code class="language-java">// ✅ D — зависимость от абстракции
+public class BookService {
+    private final BookRepository repo; // интерфейс!
+    public BookService(BookRepository r) {
+        this.repo = r; // внедряем снаружи
+    }
+    // теперь можно: InMemory, DB, или Mock!
+}</code></pre>
+  </div>
+</section>
+<section><h1>📌 Итоги</h1>
+  <div class="cols">
+    <ul class="cl">
+      <li><strong>Controller</strong> — тонкий: принять → делегировать → ответить</li>
+      <li><strong>Service</strong> — вся бизнес-логика. Не знает об UI и БД.</li>
+      <li><strong>Repository</strong> — только CRUD. Не знает о бизнес-логике.</li>
+      <li><strong>DI</strong> — передавать зависимости через конструктор.</li>
+      <li>Зависеть от <strong>интерфейсов</strong>, не реализаций.</li>
+    </ul>
+    <div class="card co"><h3>📝 ДЗ</h3><p>«Студенческий журнал»:<br/>
+    Student, Grade, StudentRepository<br/>
+    StudentService: enroll, addGrade, getTopStudents<br/>
+    StudentController + Main</p></div>
+  </div>
+</section>
+<section class="slide-title" data-background-gradient="linear-gradient(145deg,#0f0f1a 0%,#0f3460 100%)">
+  <h1>Спасибо! ☕</h1><h2>Лекция 13 из 19 · Слоистая архитектура</h2>
+  <p style="margin-top:.7em;color:#cbd5e0;font-size:.82em;"><strong style="color:#e2e8f0;">Следующая →</strong> <span style="color:#a0aec0;">Лекция 14: IO и Сериализация</span></p>
+</section>
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/zoom/zoom.js"></script>
+<script>Reveal.initialize({hash:true,slideNumber:'c/t',progress:true,controls:true,center:false,transition:'slide',transitionSpeed:'fast',backgroundTransition:'fade',width:1280,height:720,margin:0.04,plugins:[RevealHighlight,RevealZoom]});</script>
+<style>
+.lec-nav{position:fixed;bottom:0;left:0;right:0;z-index:9999;display:none;align-items:center;justify-content:center;gap:.75rem;padding:.75rem 1.5rem;background:rgba(15,15,26,.92);backdrop-filter:blur(12px);border-top:1px solid #30363d;font-family:'Inter',sans-serif;}
+.lec-nav.visible{display:flex;}
+.lec-nav a,.lec-nav button{display:inline-flex;align-items:center;gap:.4rem;padding:.45em 1.1em;border-radius:8px;font-size:.78rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all .15s;border:1px solid #30363d;background:#1a1a2e;color:#cbd5e0;}
+.lec-nav a:hover,.lec-nav button:hover{border-color:#58a6ff;color:#58a6ff;background:#0f0f1a;}
+.lec-nav .nav-next{background:#e94560;border-color:#e94560;color:#fff;}
+.lec-nav .nav-next:hover{background:#c73050;border-color:#c73050;color:#fff;}
+.lec-nav .nav-home{border-color:#30363d;}
+.lec-nav .nav-sep{width:1px;height:24px;background:#30363d;}
+.lec-nav .nav-label{font-size:.68rem;color:#8b949e;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;}
+</style>
+<div class="lec-nav" id="lecNav">
+  <a href="../lecture-12-modules-packages/lecture-12-reveal.html" class="nav-prev">&#8592; Модули и пакеты</a><div class="nav-sep"></div>
+  <a href="../index.html" class="nav-home">&#9776; К списку</a>
+  <span class="nav-label">Лекция 13 из 19</span>
+  <div class="nav-sep"></div><a href="../lecture-14-io-serializable/lecture-14-reveal.html" class="nav-next">IO и Сериализация &#8594;</a>
+</div>
+<script>
+(function(){
+  function checkLastSlide(){
+    if(!window.Reveal) return;
+    var idx   = Reveal.getIndices();
+    var total = Reveal.getTotalSlides();
+    var cur   = Reveal.getSlidePastCount() + 1;
+    var nav   = document.getElementById('lecNav');
+    if(!nav) return;
+    // show on last slide
+    if(cur >= total) nav.classList.add('visible');
+    else             nav.classList.remove('visible');
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    if(window.Reveal){
+      Reveal.on('slidechanged', checkLastSlide);
+      Reveal.on('ready',        checkLastSlide);
+    } else {
+      // wait for Reveal to init
+      window.addEventListener('load', function(){
+        if(window.Reveal){
+          Reveal.on('slidechanged', checkLastSlide);
+          Reveal.on('ready',        checkLastSlide);
+        }
+      });
+    }
+  });
+})();
+</script>
+</body></html>

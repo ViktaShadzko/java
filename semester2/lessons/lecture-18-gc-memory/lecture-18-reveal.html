@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Лекция 18 — GC и управление памятью</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>    :root{--red:#e94560;--blue:#58a6ff;--green:#56d364;--orange:#ffa657;--bg:#0f0f1a;--bg2:#1a1a2e;--bg3:#16213e;--text:#e2e8f0;--muted:#a0aec0;--dim:#cbd5e0;}
+    .reveal-viewport{background:var(--bg);}.reveal{font-family:'Inter',sans-serif;font-size:23px;color:var(--text);}
+    .reveal h1{font-weight:800;color:var(--text);font-size:1.55em;border-bottom:3px solid var(--red);padding-bottom:.2em;margin-bottom:.4em;text-transform:none;}
+    .reveal h2{font-weight:800;color:var(--red);font-size:1.2em;text-transform:none;}
+    .reveal h3{font-weight:600;color:var(--blue);font-size:.86em;text-transform:none;margin:.3em 0 .15em;}
+    .reveal p,.reveal li{color:var(--dim);line-height:1.6;}.reveal strong{color:var(--orange);}
+    .slide-title{background:linear-gradient(145deg,var(--bg) 0%,var(--bg3) 100%)!important;}
+    .slide-title h1{font-size:1.9em;color:var(--red);border:none;padding:0;}
+    .slide-title h2{color:var(--muted);font-size:.95em;font-weight:400;}
+    .ss h2{font-size:1.8em;font-weight:800;color:var(--red);border-left:6px solid var(--red);padding-left:.4em;margin-bottom:.3em;}
+    .ss p{color:var(--muted);font-size:.8em;}
+    .badge{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:.5em;padding:.3em 1em;border-radius:20px;margin:.25em .2em 0;}
+    .badge.b{background:var(--blue);}.badge.g{background:#238636;}
+    .cols{display:grid;grid-template-columns:1fr 1fr;gap:.9em;}
+    .cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.7em;}
+    .card{background:var(--bg2);border-radius:10px;padding:.55em .8em;border-top:3px solid var(--red);}
+    .card h3{font-size:.78em;margin:0 0 .2em;}.card p{font-size:.68em;color:var(--muted);margin:0;}
+    .cb{border-color:var(--blue)!important;}.cb h3{color:var(--blue)!important;}
+    .cg{border-color:var(--green)!important;}.cg h3{color:var(--green)!important;}
+    .co{border-color:var(--orange)!important;}.co h3{color:var(--orange)!important;}
+    .box{background:var(--bg2);border:1px solid var(--red);border-radius:8px;padding:.38em .75em;margin:.35em 0;}
+    .box .lbl{font-size:.54em;font-weight:700;text-transform:uppercase;color:var(--red);margin-bottom:.1em;}
+    .box p{font-size:.73em;margin:0;color:var(--text);}
+    .bb{border-color:var(--blue)!important;}.bb .lbl{color:var(--blue)!important;}
+    .bg{border-color:var(--green)!important;}.bg .lbl{color:var(--green)!important;}
+    .bo{border-color:var(--orange)!important;}.bo .lbl{color:var(--orange)!important;}
+    .reveal table{width:100%;border-collapse:collapse;font-size:.7em;}
+    .reveal th{background:var(--bg2);color:var(--red);padding:.32em .55em;text-align:left;border:1px solid #30363d;}
+    .reveal td{padding:.28em .55em;border:1px solid #30363d;color:var(--dim);}
+    .reveal tr:nth-child(even) td{background:var(--bg2);}
+    .reveal pre{border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.5);font-size:.57em;margin:.3em 0;width:100%;}
+    .reveal code{font-family:'JetBrains Mono',monospace;}
+    .reveal :not(pre)>code{background:var(--bg2);color:var(--orange);padding:.1em .3em;border-radius:4px;font-size:.8em;}
+    blockquote{border-left:4px solid var(--red);padding:.35em .8em;background:var(--bg2);border-radius:0 8px 8px 0;font-style:italic;color:var(--muted);margin:.4em 0;font-size:.88em;}
+    .cl{list-style:none;padding-left:0;}.cl li::before{content:'✅  ';}.cl li{margin-bottom:.25em;font-size:.78em;color:var(--dim);}
+    .muted{color:var(--muted)!important;}
+    .reveal .progress{color:var(--red);}.reveal .controls{color:var(--red);}.reveal .slide-number{color:#4a5568;font-size:.65em;}</style>
+</head>
+<body><div class="reveal"><div class="slides">
+<section class="slide-title" data-background-gradient="linear-gradient(145deg,#0f0f1a 0%,#0f3460 100%)">
+  <h1>☕ GC и управление памятью</h1><h2>Heap, Stack, Garbage Collector</h2>
+  <p style="color:#a0aec0;margin-top:.5em;">Семестр 2 · Лекция 18 из 19</p>
+</section>
+<section><h1>🗂️ GC и память — план</h1>
+  <div class="cols">
+    <ol style="font-size:.8em;"><li>Структура памяти JVM</li><li>Stack vs Heap</li><li>Garbage Collector — принцип</li><li>Mark-and-Sweep</li></ol>
+    <ol start="5" style="font-size:.8em;"><li>Виды GC в Java</li><li>Утечки памяти</li><li>WeakReference, SoftReference</li><li>Советы и finalize vs Cleaner</li></ol>
+  </div>
+</section>
+<section><h1>Структура памяти JVM</h1>
+  <div class="cols">
+    <pre><code class="language-text">JVM Memory
+├── Heap (объекты через new)
+│   ├── Young Generation
+│   │   ├── Eden Space      ← новые объекты
+│   │   ├── Survivor S0     ← пережили GC
+│   │   └── Survivor S1
+│   └── Old Generation      ← долгоживущие
+│
+├── Stack (per-thread)
+│   └── Stack Frame (на каждый вызов)
+│       ├── Локальные переменные
+│       └── Ссылки на heap объекты
+│
+├── Metaspace (Java 8+) ← метаданные классов
+└── Code Cache          ← JIT код</code></pre>
+    <pre><code class="language-java">// Stack хранит:
+int x = 10;         // примитив — на стеке
+String s = "hello"; // ссылка — на стеке
+                    // объект "hello" — на heap!
+// Heap хранит:
+String obj = new String("world"); // heap
+Student st = new Student("Иван"); // heap
+// Stack Frame создаётся при вызове метода
+// и уничтожается при return
+void calculate(int a, int b) {
+    int result = a + b; // всё на стеке!
+    return result;      // фрейм уничтожается
+}</code></pre>
+  </div>
+  <table style="margin-top:.4em;">
+    <thead><tr><th></th><th>Stack</th><th>Heap</th></tr></thead>
+    <tbody>
+      <tr><td>Хранит</td><td>Примитивы, ссылки</td><td>Объекты</td></tr>
+      <tr><td>Управление</td><td>Авто (LIFO)</td><td>GC</td></tr>
+      <tr><td>Thread-safe</td><td>Да (каждый свой)</td><td>Нет (общий)</td></tr>
+      <tr><td>Ошибка</td><td>StackOverflowError</td><td>OutOfMemoryError</td></tr>
+    </tbody>
+  </table>
+</section>
+<section><h1>GC и утечки памяти</h1>
+  <div class="cols">
+    <pre><code class="language-java">// GC собирает НЕДОСТИЖИМЫЕ объекты
+String a = new String("объект 1"); // heap
+String b = new String("объект 2");
+a = b;    // "объект 1" недостижим → GC!
+b = null; // "объект 2" ещё жив через a!
+// ── Утечки памяти в Java ───────────────
+// 1. Статическая коллекция без удаления
+static List&lt;EventListener&gt; listeners =
+    new ArrayList&lt;&gt;();
+// добавляем, но никогда не удаляем!
+// 2. Бесконечно растущий кэш
+static Map&lt;String, HeavyObject&gt; cache =
+    new HashMap&lt;&gt;();
+// нет ограничения + нет TTL!
+// 3. Незакрытые ресурсы
+FileReader r = new FileReader("file.txt");
+// забыли закрыть! → используй try-with-resources!
+// 4. ThreadLocal без remove()
+ThreadLocal&lt;HeavyObject&gt; tl = ...;
+// В thread pool потоки живут долго!
+// Всегда: tl.remove() после использования!</code></pre>
+    <pre><code class="language-java">// ── Слабые ссылки ─────────────────────
+// WeakReference — удаляется при первом GC
+WeakReference&lt;String&gt; weak =
+    new WeakReference&lt;&gt;(new String("слабый"));
+System.gc();
+System.out.println(weak.get()); // null
+// WeakHashMap — кэш без утечек!
+Map&lt;Object, String&gt; cache =
+    new WeakHashMap&lt;&gt;();
+Object key = new Object();
+cache.put(key, "значение");
+key = null; System.gc();
+System.out.println(cache.size()); // 0!
+// SoftReference — удаляется при нехватке памяти
+// ← идеал для кэша изображений!
+SoftReference&lt;byte[]&gt; soft =
+    new SoftReference&lt;&gt;(loadImage());
+byte[] img = soft.get();
+if (img == null) img = loadImage(); // промах</code></pre>
+  </div>
+</section>
+<section><h1>📌 Итоги</h1>
+  <div class="cols">
+    <ul class="cl">
+      <li><strong>Heap</strong> — объекты. <strong>Stack</strong> — примитивы, ссылки, фреймы.</li>
+      <li><strong>GC</strong> собирает недостижимые объекты. <strong>Не</strong> вызывай <code>System.gc()</code>!</li>
+      <li>Minor GC — быстро (Young). Full GC — медленно (вся куча).</li>
+      <li><strong>Stop-the-World</strong> — приложение паузируется при GC.</li>
+      <li><strong>G1, ZGC</strong> — современные GC с малыми паузами.</li>
+      <li>Утечки: статические коллекции, ThreadLocal, незакрытые ресурсы.</li>
+      <li><code>WeakReference</code> — умирает при GC. <code>SoftReference</code> — при нехватке памяти.</li>
+    </ul>
+    <div class="card co"><h3>📝 ДЗ</h3><p>Найти утечки в SessionManager<br/>Image Cache через SoftReference<br/>MemoryMonitor: вывод heap каждые 5 сек</p></div>
+  </div>
+</section>
+<section class="slide-title" data-background-gradient="linear-gradient(145deg,#0f0f1a 0%,#0f3460 100%)">
+  <h1>Спасибо! ☕</h1><h2>Лекция 18 из 19 · GC и управление памятью</h2>
+  <p style="margin-top:.7em;color:#cbd5e0;font-size:.82em;"><strong style="color:#e2e8f0;">Следующая →</strong> <span style="color:#a0aec0;">Лекция 19: Консультация Q&A</span></p>
+</section>
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/zoom/zoom.js"></script>
+<script>Reveal.initialize({hash:true,slideNumber:'c/t',progress:true,controls:true,center:false,transition:'slide',transitionSpeed:'fast',backgroundTransition:'fade',width:1280,height:720,margin:0.04,plugins:[RevealHighlight,RevealZoom]});</script>
+<style>
+.lec-nav{position:fixed;bottom:0;left:0;right:0;z-index:9999;display:none;align-items:center;justify-content:center;gap:.75rem;padding:.75rem 1.5rem;background:rgba(15,15,26,.92);backdrop-filter:blur(12px);border-top:1px solid #30363d;font-family:'Inter',sans-serif;}
+.lec-nav.visible{display:flex;}
+.lec-nav a,.lec-nav button{display:inline-flex;align-items:center;gap:.4rem;padding:.45em 1.1em;border-radius:8px;font-size:.78rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all .15s;border:1px solid #30363d;background:#1a1a2e;color:#cbd5e0;}
+.lec-nav a:hover,.lec-nav button:hover{border-color:#58a6ff;color:#58a6ff;background:#0f0f1a;}
+.lec-nav .nav-next{background:#e94560;border-color:#e94560;color:#fff;}
+.lec-nav .nav-next:hover{background:#c73050;border-color:#c73050;color:#fff;}
+.lec-nav .nav-home{border-color:#30363d;}
+.lec-nav .nav-sep{width:1px;height:24px;background:#30363d;}
+.lec-nav .nav-label{font-size:.68rem;color:#8b949e;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;}
+</style>
+<div class="lec-nav" id="lecNav">
+  <a href="../lecture-17-reflection-annotations/lecture-17-reveal.html" class="nav-prev">&#8592; Рефлексия и аннотации</a><div class="nav-sep"></div>
+  <a href="../index.html" class="nav-home">&#9776; К списку</a>
+  <span class="nav-label">Лекция 18 из 19</span>
+  <div class="nav-sep"></div><a href="../lecture-19-qa/lecture-19-reveal.html" class="nav-next">Консультация Q&amp;A &#8594;</a>
+</div>
+<script>
+(function(){
+  function checkLastSlide(){
+    if(!window.Reveal) return;
+    var idx   = Reveal.getIndices();
+    var total = Reveal.getTotalSlides();
+    var cur   = Reveal.getSlidePastCount() + 1;
+    var nav   = document.getElementById('lecNav');
+    if(!nav) return;
+    // show on last slide
+    if(cur >= total) nav.classList.add('visible');
+    else             nav.classList.remove('visible');
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    if(window.Reveal){
+      Reveal.on('slidechanged', checkLastSlide);
+      Reveal.on('ready',        checkLastSlide);
+    } else {
+      // wait for Reveal to init
+      window.addEventListener('load', function(){
+        if(window.Reveal){
+          Reveal.on('slidechanged', checkLastSlide);
+          Reveal.on('ready',        checkLastSlide);
+        }
+      });
+    }
+  });
+})();
+</script>
+</body></html>

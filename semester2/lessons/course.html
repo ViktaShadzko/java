@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>☕ Java OOP — Семестр 2</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:    #e94560;
+      --blue:   #58a6ff;
+      --green:  #56d364;
+      --orange: #ffa657;
+      --purple: #d2a8ff;
+      --bg:     #0f0f1a;
+      --bg2:    #1a1a2e;
+      --bg3:    #16213e;
+      --border: #30363d;
+      --text:   #e2e8f0;
+      --muted:  #8b949e;
+      --dim:    #cbd5e0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, var(--bg) 0%, var(--bg3) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 2.5rem 1.6rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .logo-icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+    .logo-text h1 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -.02em;
+    }
+    .logo-text p {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-top: .1rem;
+    }
+    .header-meta {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .pill {
+      font-size: .7rem;
+      font-weight: 600;
+      padding: .3em .9em;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .pill.red   { border-color: var(--red);    color: var(--red); }
+    .pill.blue  { border-color: var(--blue);   color: var(--blue); }
+    .pill.green { border-color: var(--green);  color: var(--green); }
+
+    /* ── SEARCH ── */
+    .search-bar {
+      max-width: 1200px;
+      margin: 1.5rem auto 0;
+      padding: 0 2.5rem;
+    }
+    .search-bar input {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .7em 1.1em;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: .9rem;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .search-bar input:focus { border-color: var(--blue); }
+    .search-bar input::placeholder { color: var(--muted); }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 2.5rem 4rem;
+    }
+
+    /* ── PART HEADER ── */
+    .part-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin: 2.2rem 0 1rem;
+    }
+    .part-header h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .part-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .part-badge {
+      font-size: .65rem;
+      font-weight: 700;
+      padding: .2em .8em;
+      border-radius: 20px;
+      background: var(--bg2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    /* ── GRID ── */
+    .lectures-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    /* ── CARD ── */
+    .lec-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.15rem 1.2rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
+      transition: border-color .2s, transform .15s, box-shadow .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .lec-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent, var(--red));
+      border-radius: 14px 14px 0 0;
+    }
+    .lec-card:hover {
+      border-color: var(--accent, var(--red));
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0,0,0,.4);
+      text-decoration: none;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: .5rem;
+    }
+    .lec-number {
+      font-size: .68rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent, var(--red));
+      background: color-mix(in srgb, var(--accent, var(--red)) 12%, transparent);
+      padding: .2em .6em;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .lec-tag {
+      font-size: .62rem;
+      font-weight: 600;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: .15em .5em;
+      white-space: nowrap;
+    }
+
+    .lec-title {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.35;
+    }
+    .lec-subtitle {
+      font-size: .76rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: .2rem;
+    }
+    .topics {
+      display: flex;
+      gap: .35rem;
+      flex-wrap: wrap;
+    }
+    .topic-chip {
+      font-size: .6rem;
+      font-weight: 600;
+      padding: .15em .55em;
+      border-radius: 5px;
+      background: var(--bg3);
+      color: var(--dim);
+      border: 1px solid var(--border);
+    }
+    .open-btn {
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--accent, var(--red));
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      white-space: nowrap;
+      opacity: .8;
+      transition: opacity .15s;
+    }
+    .lec-card:hover .open-btn { opacity: 1; }
+    .open-btn svg { width: 14px; height: 14px; }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .stat { display: flex; flex-direction: column; gap: .15rem; }
+    .stat-val {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .stat-val span { color: var(--red); }
+    .stat-label { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+
+    /* ── PROGRESS ── */
+    .progress-wrap {
+      flex: 1;
+      min-width: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: .4rem;
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .7rem;
+      color: var(--muted);
+    }
+    .progress-bar {
+      height: 6px;
+      background: var(--bg3);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--red), var(--orange));
+      transition: width .6s ease;
+    }
+
+    /* ── NO RESULTS ── */
+    .no-results {
+      text-align: center;
+      padding: 3rem;
+      color: var(--muted);
+      font-size: .9rem;
+      display: none;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: .75rem;
+      border-top: 1px solid var(--border);
+    }
+    footer strong { color: var(--dim); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      header { padding: 1.2rem 1rem 1rem; }
+      .search-bar { padding: 0 1rem; }
+      main { padding: 1.5rem 1rem 3rem; }
+      .lectures-grid { grid-template-columns: 1fr; }
+      .stats-bar { gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">☕</div>
+      <div class="logo-text">
+        <h1>Введение в ООП на Java</h1>
+        <p>Семестр 2 · 19 лекций · 38 академических часов</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span class="pill">2025/2026</span>
+      <span class="pill blue">Лектор: Виктор</span>
+      <span class="pill green">Практика: Многоуважаемая Анастасия Юрьевна</span>
+    </div>
+  </div>
+</header>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="🔍  Поиск по лекциям..." autocomplete="off"/>
+</div>
+
+<main>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-val">1<span>9</span></div>
+      <div class="stat-label">Лекций всего</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">3<span>8</span></div>
+      <div class="stat-label">Академических часов</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">0<span>0</span>–<span>19</span></div>
+      <div class="stat-label">Номера лекций</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">J<span>8</span>+</div>
+      <div class="stat-label">Версия Java</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Прогресс курса</span>
+        <span>20 / 20 готово</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:100%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="noResults" class="no-results">Ничего не найдено 🔍</div>
+
+  <!-- PART 0 -->
+  <div class="part-header" data-part="0">
+    <h2>Вводный блок</h2>
+    <div class="part-line"></div>
+    <div class="part-badge">2 лекции</div>
+  </div>
+  <div class="lectures-grid">
+
+    <a class="lec-card" href="lecture-00-intro/lecture-00-reveal.html" target="_blank"
+       style="--accent:#a78bfa"
+       data-title="Введение в курс"
+       data-topics="курс программа ооп введение анастасия виктор">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 00</span>
+        <span class="lec-tag">Вводная</span>
+      </div>
+      <div class="lec-title">Введение в курс</div>
+      <div class="lec-subtitle">Программа, цели, 38 часов. Лектор и практика.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">Программа</span>
+          <span class="topic-chip">Цели</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+    <a class="lec-card" href="lecture-01-oop-paradigms/lecture-01-reveal.html" target="_blank"
+       style="--accent:#e94560"
+       data-title="Парадигмы программирования"
+       data-topics="парадигмы императивное процедурное ооп функциональное история ассемблер rust swift go">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 01</span>
+        <span class="lec-tag">ООП</span>
+      </div>
+      <div class="lec-title">Введение в ООП. История парадигм</div>
+      <div class="lec-subtitle">Императивное, процедурное, ООП, функциональное.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">Парадигмы</span>
+          <span class="topic-chip">История</span>
+          <span class="topic-chip">Java</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- PART 1 -->
+  <div class="part-header" data-part="1">
+    <h2>Часть 1 — Основы ООП</h2>
+    <div class="part-line"></div>
+    <div class="part-badge">5 лекций</div>
+  </div>
+  <div class="lectures-grid">
+
+    <a class="lec-card" href="lecture-02-classes-oop/lecture-02-reveal.html" target="_blank"
+       style="--accent:#e94560"
+       data-title="Классы и объекты. Инкапсуляция и Наследование"
+       data-topics="класс объект инкапсуляция наследование extends super override final this конструктор поля методы">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 02</span>
+        <span class="lec-tag">ООП</span>
+      </div>
+      <div class="lec-title">Классы и объекты. Инкапсуляция и Наследование</div>
+      <div class="lec-subtitle">Поля, методы, конструкторы. <code>this</code>, <code>extends</code>, <code>super</code>, <code>@Override</code>, <code>final</code>.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">Класс</span>
+          <span class="topic-chip">Наследование</span>
+          <span class="topic-chip">final</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+    <a class="lec-card" href="lecture-03-interfaces-polymorphism/lecture-03-reveal.html" target="_blank"
+       style="--accent:#58a6ff"
+       data-title="Интерфейсы и абстрактные классы. Полиморфизм"
+       data-topics="интерфейс абстрактный класс полиморфизм перегрузка переопределение overloading overriding default implements">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 03</span>
+        <span class="lec-tag">Интерфейсы</span>
+      </div>
+      <div class="lec-title">Интерфейсы и абстрактные классы. Полиморфизм</div>
+      <div class="lec-subtitle">Overloading vs Overriding. <code>default</code>-методы. Функциональные интерфейсы.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">Interface</span>
+          <span class="topic-chip">Abstract</span>
+          <span class="topic-chip">Полиморфизм</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+    <a class="lec-card" href="lecture-04-enum-singleton/lecture-04-reveal.html" target="_blank"
+       style="--accent:#ffa657"
+       data-title="Enum и Singleton"
+       data-topics="enum перечисление singleton одиночка паттерн enumset enummap">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 04</span>
+        <span class="lec-tag">Паттерны</span>
+      </div>
+      <div class="lec-title">Enum и Singleton</div>
+      <div class="lec-subtitle">Перечисления с полями и методами. Паттерн «Одиночка» через Enum.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">Enum</span>
+          <span class="topic-chip">Singleton</span>
+          <span class="topic-chip">EnumMap</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+    <a class="lec-card" href="lecture-05-exceptions/lecture-05-reveal.html" target="_blank"
+       style="--accent:#f85149"
+       data-title="Исключения и обработка ошибок"
+       data-topics="исключения exception try catch finally throws checked unchecked runtime иерархия">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 05</span>
+        <span class="lec-tag">Exceptions</span>
+      </div>
+      <div class="lec-title">Исключения и обработка ошибок</div>
+      <div class="lec-subtitle"><code>try-catch-finally</code>, try-with-resources. Checked vs Unchecked. Свои исключения.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">try-catch</span>
+          <span class="topic-chip">Checked</span>
+          <span class="topic-chip">Custom</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- PART 2 -->
+  <div class="part-header" data-part="2">
+    <h2>Часть 2 — Типы и коллекции</h2>
+    <div class="part-line"></div>
+    <div class="part-badge">3 лекции</div>
+  </div>
+  <div class="lectures-grid">
+
+    <a class="lec-card" href="lecture-06-generics/lecture-06-reveal.html" target="_blank"
+       style="--accent:#d2a8ff"
+       data-title="Параметризованные типы и дженерики"
+       data-topics="дженерики generics параметризованные типы wildcards extends super pecs стирание типов">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 06</span>
+        <span class="lec-tag">Generics</span>
+      </div>
+      <div class="lec-title">Параметризованные типы и дженерики</div>
+      <div class="lec-subtitle">Box&lt;T&gt;, Pair&lt;K,V&gt;, PECS, стирание типов (Type Erasure).</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">Generic&lt;T&gt;</span>
+          <span class="topic-chip">PECS</span>
+          <span class="topic-chip">Wildcards</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+    <a class="lec-card" href="lecture-07-collections/lecture-07-reveal.html" target="_blank"
+       style="--accent:#56d364"
+       data-title="Коллекции"
+       data-topics="коллекции list arraylist linkedlist set hashset treeset linkedhashset queue deque arraydeque priorityqueue equals hashcode">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 07</span>
+        <span class="lec-tag">Collections</span>
+      </div>
+      <div class="lec-title">Коллекции</div>
+      <div class="lec-subtitle">List, Set, Queue, Deque. ArrayList vs LinkedList. equals/hashCode.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">List</span>
+          <span class="topic-chip">Set</span>
+          <span class="topic-chip">Queue</span>
+          <span class="topic-chip">Deque</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+    <a class="lec-card" href="lecture-08-maps/lecture-08-reveal.html" target="_blank"
+       style="--accent:#58a6ff"
+       data-title="Мапы"
+       data-topics="map hashmap treemap linkedhashmap computeifabsent merge getordefault lru cache">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 08</span>
+        <span class="lec-tag">Map</span>
+      </div>
+      <div class="lec-title">Мапы</div>
+      <div class="lec-subtitle">HashMap, TreeMap, LinkedHashMap. LRU Cache. Java 8+ методы.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">HashMap</span>
+          <span class="topic-chip">TreeMap</span>
+          <span class="topic-chip">LRU</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- PART 3 -->
+  <div class="part-header" data-part="3">
+    <h2>Часть 3 — Современная Java</h2>
+    <div class="part-line"></div>
+    <div class="part-badge">3 лекции</div>
+  </div>
+  <div class="lectures-grid">
+
+    <a class="lec-card" href="lecture-09-inner-classes/lecture-09-reveal.html" target="_blank"
+       style="--accent:#ffa657"
+       data-title="Inner классы и анонимные классы"
+       data-topics="inner class внутренний класс анонимный static nested локальный builder паттерн">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 09</span>
+        <span class="lec-tag">Inner Classes</span>
+      </div>
+      <div class="lec-title">Inner классы и анонимные классы</div>
+      <div class="lec-subtitle">4 вида. Static Nested, Inner, Local, Anonymous. Паттерн Builder.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">Inner</span>
+          <span class="topic-chip">Anonymous</span>
+          <span class="topic-chip">Builder</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+    <a class="lec-card" href="lecture-10-lambda-fp/lecture-10-reveal.html" target="_blank"
+       style="--accent:#e94560"
+       data-title="Лямбда выражения и функциональное программирование"
+       data-topics="лямбда lambda функциональный интерфейс predicate function consumer supplier comparable comparator optional method reference">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 10</span>
+        <span class="lec-tag">Лямбды / ФП</span>
+      </div>
+      <div class="lec-title">Лямбды и функциональное программирование</div>
+      <div class="lec-subtitle">Predicate, Function, Consumer, Supplier. Comparable. Optional. Method References.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">Lambda</span>
+          <span class="topic-chip">Optional</span>
+          <span class="topic-chip">Comparator</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+    <a class="lec-card" href="lecture-11-streams/lecture-11-reveal.html" target="_blank"
+       style="--accent:#56d364"
+       data-title="Стримы и операции над коллекциями"
+       data-topics="stream api filter map flatmap collect groupingby reduce intstream parallell stream ленивость">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 11</span>
+        <span class="lec-tag">Stream API</span>
+      </div>
+      <div class="lec-title">Стримы и операции над коллекциями</div>
+      <div class="lec-subtitle">filter, map, flatMap, reduce. Collectors. groupingBy. Ленивость.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">Stream</span>
+          <span class="topic-chip">Collectors</span>
+          <span class="topic-chip">groupingBy</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- PART 4 -->
+  <div class="part-header" data-part="4">
+    <h2>Часть 4 — Архитектура</h2>
+    <div class="part-line"></div>
+    <div class="part-badge">2 лекции</div>
+  </div>
+  <div class="lectures-grid">
+
+    <a class="lec-card" href="lecture-12-modules-packages/lecture-12-reveal.html" target="_blank"
+       style="--accent:#d2a8ff"
+       data-title="Модули и пакеты"
+       data-topics="модули пакеты package import jpms module-info requires exports opens видимость структура проекта">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 12</span>
+        <span class="lec-tag">Модули</span>
+      </div>
+      <div class="lec-title">Модули и пакеты</div>
+      <div class="lec-subtitle">Package, import, package-private. JPMS: module-info.java, requires, exports.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">package</span>
+          <span class="topic-chip">JPMS</span>
+          <span class="topic-chip">module-info</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+    <a class="lec-card" href="lecture-13-layered-mvc/lecture-13-reveal.html" target="_blank"
+       style="--accent:#58a6ff"
+       data-title="Layered архитектура и MVC"
+       data-topics="layered архитектура mvc repository service controller solid dependency injection слои">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 13</span>
+        <span class="lec-tag">Architecture</span>
+      </div>
+      <div class="lec-title">Layered архитектура и MVC</div>
+      <div class="lec-subtitle">Controller → Service → Repository. SOLID. Dependency Injection.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">Layers</span>
+          <span class="topic-chip">SOLID</span>
+          <span class="topic-chip">DI</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- PART 5 -->
+  <div class="part-header" data-part="5">
+    <h2>Часть 5 — Продвинутые темы</h2>
+    <div class="part-line"></div>
+    <div class="part-badge">6 лекций</div>
+  </div>
+  <div class="lectures-grid">
+
+    <a class="lec-card" href="lecture-14-io-serializable/lecture-14-reveal.html" target="_blank"
+       style="--accent:#ffa657"
+       data-title="IO streams и работа с файлами. Serializable, Cloneable"
+       data-topics="io stream файлы сериализация serializable cloneable transient nio2 files path buffered reader writer">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 14</span>
+        <span class="lec-tag">IO / Files</span>
+      </div>
+      <div class="lec-title">IO streams и работа с файлами. Serializable, Cloneable</div>
+      <div class="lec-subtitle">NIO.2 Files API. Байтовые и символьные потоки. transient. Deep Copy.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">IO</span>
+          <span class="topic-chip">NIO.2</span>
+          <span class="topic-chip">Serializable</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+    <a class="lec-card" href="lecture-15-localization-datetime/lecture-15-reveal.html" target="_blank"
+       style="--accent:#56d364"
+       data-title="Локализация и интернационализация. Property, DateTime"
+       data-topics="локализация интернационализация locale resourcebundle properties datetime localdate localtime zoneddatetime period duration formatter">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 15</span>
+        <span class="lec-tag">L10n / DateTime</span>
+      </div>
+      <div class="lec-title">Локализация и интернационализация. Property, DateTime</div>
+      <div class="lec-subtitle">Locale, ResourceBundle. LocalDate/Time/DateTime. ZonedDateTime. DateTimeFormatter.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">Locale</span>
+          <span class="topic-chip">java.time</span>
+          <span class="topic-chip">ZonedDateTime</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+    <a class="lec-card" href="lecture-16-xml-json/lecture-16-reveal.html" target="_blank"
+       style="--accent:#e94560"
+       data-title="XML и JSON парсинг"
+       data-topics="xml json парсинг jackson objectmapper gson dom serialization deserialization jsonignore jsonproperty">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 16</span>
+        <span class="lec-tag">XML / JSON</span>
+      </div>
+      <div class="lec-title">XML и JSON парсинг</div>
+      <div class="lec-subtitle">DOM парсинг XML. Jackson ObjectMapper. Gson. Аннотации сериализации.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">Jackson</span>
+          <span class="topic-chip">Gson</span>
+          <span class="topic-chip">XML DOM</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+    <a class="lec-card" href="lecture-17-reflection-annotations/lecture-17-reveal.html" target="_blank"
+       style="--accent:#d2a8ff"
+       data-title="Рефлексия и аннотации"
+       data-topics="рефлексия reflection аннотации annotations class getfields getmethods retention target setaccessible di контейнер">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 17</span>
+        <span class="lec-tag">Reflection</span>
+      </div>
+      <div class="lec-title">Рефлексия и аннотации</div>
+      <div class="lec-subtitle">Class API. getDeclaredFields/Methods. Свои аннотации. Мини-DI контейнер.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">Reflection</span>
+          <span class="topic-chip">@Retention</span>
+          <span class="topic-chip">@Target</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+    <a class="lec-card" href="lecture-18-gc-memory/lecture-18-reveal.html" target="_blank"
+       style="--accent:#58a6ff"
+       data-title="Garbage Collector и управление памятью"
+       data-topics="garbage collector gc память heap stack young old generation weakreference softreference утечки памяти finalize cleaner">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 18</span>
+        <span class="lec-tag">GC / Memory</span>
+      </div>
+      <div class="lec-title">Garbage Collector и управление памятью</div>
+      <div class="lec-subtitle">Heap vs Stack. Young/Old Generation. WeakReference. Утечки памяти.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">GC</span>
+          <span class="topic-chip">Heap/Stack</span>
+          <span class="topic-chip">WeakRef</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+    <a class="lec-card" href="lecture-19-qa/lecture-19-reveal.html" target="_blank"
+       style="--accent:#56d364"
+       data-title="Консультация и Q&A"
+       data-topics="консультация qa вопросы ответы итоги экзамен шпаргалка типичные ошибки что дальше spring">
+      <div class="card-top">
+        <span class="lec-number">ЛЕК 19</span>
+        <span class="lec-tag">Q&amp;A</span>
+      </div>
+      <div class="lec-title">Консультация и Q&amp;A</div>
+      <div class="lec-subtitle">Карта курса. Типичные ошибки. Мини-тест. Советы для экзамена. Что дальше.</div>
+      <div class="card-footer">
+        <div class="topics">
+          <span class="topic-chip">Итоги</span>
+          <span class="topic-chip">Экзамен</span>
+          <span class="topic-chip">Что дальше</span>
+        </div>
+        <span class="open-btn">Открыть <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.75 2.75a.75.75 0 0 0-1.5 0v5.69L5.03 6.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.75 8.44V2.75Z"/></svg></span>
+      </div>
+    </a>
+
+  </div>
+
+</main>
+
+<footer>
+  <strong>Введение в ООП на Java</strong> · Семестр 2 · 2025/2026 ·
+  Лектор: <strong>Виктор</strong> · Практика: <strong>Многоуважаемая Анастасия Юрьевна</strong>
+</footer>
+
+<script>
+  const input  = document.getElementById('searchInput');
+  const noRes  = document.getElementById('noResults');
+  const cards  = document.querySelectorAll('.lec-card');
+  const parts  = document.querySelectorAll('.part-header');
+  const grids  = document.querySelectorAll('.lectures-grid');
+
+  input.addEventListener('input', () => {
+    const q = input.value.toLowerCase().trim();
+    let visible = 0;
+
+    cards.forEach(card => {
+      const title  = (card.dataset.title  || '').toLowerCase();
+      const topics = (card.dataset.topics || '').toLowerCase();
+      const num    = card.querySelector('.lec-number')?.textContent.toLowerCase() || '';
+      const show   = !q || title.includes(q) || topics.includes(q) || num.includes(q);
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    // Show/hide part headers based on whether their grid has any visible cards
+    parts.forEach((part, i) => {
+      const grid = grids[i];
+      if (!grid) return;
+      const anyVisible = [...grid.querySelectorAll('.lec-card')]
+        .some(c => c.style.display !== 'none');
+      part.style.display   = anyVisible ? '' : 'none';
+      grid.style.display   = anyVisible ? '' : 'none';
+    });
+
+    noRes.style.display = visible === 0 ? 'block' : 'none';
+  });
+
+  // Keyboard shortcut: / to focus search
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement !== input) {
+      e.preventDefault();
+      input.focus();
+      input.select();
+    }
+    if (e.key === 'Escape') {
+      input.value = '';
+      input.dispatchEvent(new Event('input'));
+      input.blur();
+    }
+  });
+</script>
+
+</body>
+</html>
+

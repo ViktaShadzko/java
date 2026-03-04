@@ -1,0 +1,247 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Лекция 16 — XML и JSON</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>    :root{--red:#e94560;--blue:#58a6ff;--green:#56d364;--orange:#ffa657;--bg:#0f0f1a;--bg2:#1a1a2e;--bg3:#16213e;--text:#e2e8f0;--muted:#a0aec0;--dim:#cbd5e0;}
+    .reveal-viewport{background:var(--bg);}.reveal{font-family:'Inter',sans-serif;font-size:23px;color:var(--text);}
+    .reveal h1{font-weight:800;color:var(--text);font-size:1.55em;border-bottom:3px solid var(--red);padding-bottom:.2em;margin-bottom:.4em;text-transform:none;}
+    .reveal h2{font-weight:800;color:var(--red);font-size:1.2em;text-transform:none;}
+    .reveal h3{font-weight:600;color:var(--blue);font-size:.86em;text-transform:none;margin:.3em 0 .15em;}
+    .reveal p,.reveal li{color:var(--dim);line-height:1.6;}.reveal strong{color:var(--orange);}
+    .slide-title{background:linear-gradient(145deg,var(--bg) 0%,var(--bg3) 100%)!important;}
+    .slide-title h1{font-size:1.9em;color:var(--red);border:none;padding:0;}
+    .slide-title h2{color:var(--muted);font-size:.95em;font-weight:400;}
+    .ss h2{font-size:1.8em;font-weight:800;color:var(--red);border-left:6px solid var(--red);padding-left:.4em;margin-bottom:.3em;}
+    .ss p{color:var(--muted);font-size:.8em;}
+    .badge{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:.5em;padding:.3em 1em;border-radius:20px;margin:.25em .2em 0;}
+    .badge.b{background:var(--blue);}.badge.g{background:#238636;}
+    .cols{display:grid;grid-template-columns:1fr 1fr;gap:.9em;}
+    .cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.7em;}
+    .card{background:var(--bg2);border-radius:10px;padding:.55em .8em;border-top:3px solid var(--red);}
+    .card h3{font-size:.78em;margin:0 0 .2em;}.card p{font-size:.68em;color:var(--muted);margin:0;}
+    .cb{border-color:var(--blue)!important;}.cb h3{color:var(--blue)!important;}
+    .cg{border-color:var(--green)!important;}.cg h3{color:var(--green)!important;}
+    .co{border-color:var(--orange)!important;}.co h3{color:var(--orange)!important;}
+    .box{background:var(--bg2);border:1px solid var(--red);border-radius:8px;padding:.38em .75em;margin:.35em 0;}
+    .box .lbl{font-size:.54em;font-weight:700;text-transform:uppercase;color:var(--red);margin-bottom:.1em;}
+    .box p{font-size:.73em;margin:0;color:var(--text);}
+    .bb{border-color:var(--blue)!important;}.bb .lbl{color:var(--blue)!important;}
+    .bg{border-color:var(--green)!important;}.bg .lbl{color:var(--green)!important;}
+    .bo{border-color:var(--orange)!important;}.bo .lbl{color:var(--orange)!important;}
+    .reveal table{width:100%;border-collapse:collapse;font-size:.7em;}
+    .reveal th{background:var(--bg2);color:var(--red);padding:.32em .55em;text-align:left;border:1px solid #30363d;}
+    .reveal td{padding:.28em .55em;border:1px solid #30363d;color:var(--dim);}
+    .reveal tr:nth-child(even) td{background:var(--bg2);}
+    .reveal pre{border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.5);font-size:.57em;margin:.3em 0;width:100%;}
+    .reveal code{font-family:'JetBrains Mono',monospace;}
+    .reveal :not(pre)>code{background:var(--bg2);color:var(--orange);padding:.1em .3em;border-radius:4px;font-size:.8em;}
+    blockquote{border-left:4px solid var(--red);padding:.35em .8em;background:var(--bg2);border-radius:0 8px 8px 0;font-style:italic;color:var(--muted);margin:.4em 0;font-size:.88em;}
+    .cl{list-style:none;padding-left:0;}.cl li::before{content:'✅  ';}.cl li{margin-bottom:.25em;font-size:.78em;color:var(--dim);}
+    .muted{color:var(--muted)!important;}
+    .reveal .progress{color:var(--red);}.reveal .controls{color:var(--red);}.reveal .slide-number{color:#4a5568;font-size:.65em;}</style>
+</head>
+<body><div class="reveal"><div class="slides">
+<section class="slide-title" data-background-gradient="linear-gradient(145deg,#0f0f1a 0%,#0f3460 100%)">
+  <h1>☕ XML и JSON</h1><h2>Парсинг, Jackson, Gson</h2>
+  <p style="color:#a0aec0;margin-top:.5em;">Семестр 2 · Лекция 16 из 19</p>
+</section>
+<section><h1>🗂️ XML и JSON — план</h1>
+  <div class="cols">
+    <ol style="font-size:.8em;"><li>XML vs JSON — сравнение</li><li>XML DOM парсинг</li><li>XML запись</li><li>Jackson — сериализация</li></ol>
+    <ol start="5" style="font-size:.8em;"><li>Jackson — десериализация</li><li>Jackson — конфигурация</li><li>Gson — альтернатива</li><li>Практика: конфиг</li></ol>
+  </div>
+</section>
+<section><h1>XML vs JSON</h1>
+  <div class="cols">
+    <pre><code class="language-xml">&lt;!-- XML — многословный, но мощный --&gt;
+&lt;students&gt;
+  &lt;student id="1"&gt;
+    &lt;name&gt;Иван Иванов&lt;/name&gt;
+    &lt;age&gt;20&lt;/age&gt;
+    &lt;gpa&gt;8.5&lt;/gpa&gt;
+    &lt;courses&gt;
+      &lt;course&gt;Java&lt;/course&gt;
+      &lt;course&gt;Math&lt;/course&gt;
+    &lt;/courses&gt;
+  &lt;/student&gt;
+&lt;/students&gt;</code></pre>
+    <pre><code class="language-json">// JSON — компактный, стандарт REST API
+{
+  "students": [
+    {
+      "id": 1,
+      "name": "Иван Иванов",
+      "age": 20,
+      "gpa": 8.5,
+      "courses": ["Java", "Math"]
+    }
+  ]
+}</code></pre>
+  </div>
+  <table style="margin-top:.5em;">
+    <thead><tr><th>Критерий</th><th>XML</th><th>JSON</th></tr></thead>
+    <tbody>
+      <tr><td>Размер</td><td>Больше</td><td>Меньше ✅</td></tr>
+      <tr><td>Комментарии</td><td>✅</td><td>❌</td></tr>
+      <tr><td>Пространства имён</td><td>✅</td><td>❌</td></tr>
+      <tr><td>REST API</td><td>Устаревает</td><td>Стандарт ✅</td></tr>
+      <tr><td>Config (Maven, Spring)</td><td>✅</td><td>—</td></tr>
+    </tbody>
+  </table>
+</section>
+<section><h1>Jackson — сериализация ↔ JSON</h1>
+  <div class="cols">
+    <pre><code class="language-xml">&lt;!-- pom.xml --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+  &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
+  &lt;version&gt;2.16.1&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+    <pre><code class="language-java">public class Student {
+    private Long   id;
+    private String name;
+    private int    age;
+    private double gpa;
+    private List&lt;String&gt; courses;
+    @JsonIgnore                    // не в JSON
+    private String password;
+    @JsonProperty("full_name")     // переименовать
+    private String fullName;
+    @JsonFormat(pattern="dd.MM.yyyy") // дата
+    private LocalDate birthDate;
+    // Геттеры и сеттеры обязательны!
+}</code></pre>
+    <pre><code class="language-java">ObjectMapper mapper = new ObjectMapper();
+mapper.findAndRegisterModules(); // java.time
+// Java → JSON
+Student s = new Student();
+s.setName("Иван"); s.setAge(20);
+String json = mapper.writeValueAsString(s);
+// {"name":"Иван","age":20,...}
+// Красиво
+String pretty = mapper
+    .writerWithDefaultPrettyPrinter()
+    .writeValueAsString(s);
+// JSON → Java
+Student loaded = mapper.readValue(
+    json, Student.class);
+// Список
+String arr = "[{\"name\":\"Иван\"},...]";
+List&lt;Student&gt; list = mapper.readValue(arr,
+    new TypeReference&lt;List&lt;Student&gt;&gt;() {});
+System.out.println(list.size());</code></pre>
+  </div>
+</section>
+<section><h1>Jackson Config и Gson</h1>
+  <div class="cols">
+    <pre><code class="language-java">// ── Jackson конфигурация ───────────────
+ObjectMapper mapper = new ObjectMapper();
+// Игнорировать неизвестные поля
+mapper.configure(
+    DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+    false);
+// null не включать в JSON
+mapper.setSerializationInclusion(
+    JsonInclude.Include.NON_NULL);
+// Поддержка java.time
+mapper.registerModule(new JavaTimeModule());
+mapper.configure(
+    SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,
+    false);</code></pre>
+    <pre><code class="language-java">// ── Gson ───────────────────────────────
+Gson gson = new GsonBuilder()
+    .setPrettyPrinting()
+    .setDateFormat("dd.MM.yyyy")
+    .excludeFieldsWithModifiers(TRANSIENT)
+    .create();
+// Java → JSON
+String json = gson.toJson(student);
+// JSON → Java
+Student s = gson.fromJson(json, Student.class);
+// Список через TypeToken
+Type type = new TypeToken&lt;
+    List&lt;Student&gt;&gt;(){}.getType();
+List&lt;Student&gt; list = gson.fromJson(arr, type);
+// Аннотации
+public class Product {
+    @SerializedName("product_name")
+    private String name;
+    @Expose(serialize=true, deserialize=false)
+    private String internalCode;
+}</code></pre>
+  </div>
+</section>
+<section><h1>📌 Итоги</h1>
+  <div class="cols">
+    <ul class="cl">
+      <li><strong>XML</strong> — Maven, Spring XML. DOM для небольших, SAX для больших.</li>
+      <li><strong>JSON</strong> — стандарт REST API.</li>
+      <li><strong>Jackson ObjectMapper</strong> — главный инструмент Java.</li>
+      <li><code>@JsonIgnore</code>, <code>@JsonProperty</code>, <code>@JsonFormat</code> — аннотации.</li>
+      <li><code>TypeReference&lt;List&lt;T&gt;&gt;</code> — для параметризованных типов!</li>
+      <li><strong>Gson</strong> — проще в конфигурации, нет нужды в геттерах.</li>
+    </ul>
+    <div class="card co"><h3>📝 ДЗ</h3><p>ProductCatalog → catalog.json → фильтр &lt; 1000 руб. → filtered.json<br/>Универсальный JsonRepository&lt;T&gt;: save/load</p></div>
+  </div>
+</section>
+<section class="slide-title" data-background-gradient="linear-gradient(145deg,#0f0f1a 0%,#0f3460 100%)">
+  <h1>Спасибо! ☕</h1><h2>Лекция 16 из 19 · XML и JSON</h2>
+  <p style="margin-top:.7em;color:#cbd5e0;font-size:.82em;"><strong style="color:#e2e8f0;">Следующая →</strong> <span style="color:#a0aec0;">Лекция 17: Рефлексия и аннотации</span></p>
+</section>
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/zoom/zoom.js"></script>
+<script>Reveal.initialize({hash:true,slideNumber:'c/t',progress:true,controls:true,center:false,transition:'slide',transitionSpeed:'fast',backgroundTransition:'fade',width:1280,height:720,margin:0.04,plugins:[RevealHighlight,RevealZoom]});</script>
+<style>
+.lec-nav{position:fixed;bottom:0;left:0;right:0;z-index:9999;display:none;align-items:center;justify-content:center;gap:.75rem;padding:.75rem 1.5rem;background:rgba(15,15,26,.92);backdrop-filter:blur(12px);border-top:1px solid #30363d;font-family:'Inter',sans-serif;}
+.lec-nav.visible{display:flex;}
+.lec-nav a,.lec-nav button{display:inline-flex;align-items:center;gap:.4rem;padding:.45em 1.1em;border-radius:8px;font-size:.78rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all .15s;border:1px solid #30363d;background:#1a1a2e;color:#cbd5e0;}
+.lec-nav a:hover,.lec-nav button:hover{border-color:#58a6ff;color:#58a6ff;background:#0f0f1a;}
+.lec-nav .nav-next{background:#e94560;border-color:#e94560;color:#fff;}
+.lec-nav .nav-next:hover{background:#c73050;border-color:#c73050;color:#fff;}
+.lec-nav .nav-home{border-color:#30363d;}
+.lec-nav .nav-sep{width:1px;height:24px;background:#30363d;}
+.lec-nav .nav-label{font-size:.68rem;color:#8b949e;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;}
+</style>
+<div class="lec-nav" id="lecNav">
+  <a href="../lecture-15-localization-datetime/lecture-15-reveal.html" class="nav-prev">&#8592; Локализация и DateTime</a><div class="nav-sep"></div>
+  <a href="../index.html" class="nav-home">&#9776; К списку</a>
+  <span class="nav-label">Лекция 16 из 19</span>
+  <div class="nav-sep"></div><a href="../lecture-17-reflection-annotations/lecture-17-reveal.html" class="nav-next">Рефлексия и аннотации &#8594;</a>
+</div>
+<script>
+(function(){
+  function checkLastSlide(){
+    if(!window.Reveal) return;
+    var idx   = Reveal.getIndices();
+    var total = Reveal.getTotalSlides();
+    var cur   = Reveal.getSlidePastCount() + 1;
+    var nav   = document.getElementById('lecNav');
+    if(!nav) return;
+    // show on last slide
+    if(cur >= total) nav.classList.add('visible');
+    else             nav.classList.remove('visible');
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    if(window.Reveal){
+      Reveal.on('slidechanged', checkLastSlide);
+      Reveal.on('ready',        checkLastSlide);
+    } else {
+      // wait for Reveal to init
+      window.addEventListener('load', function(){
+        if(window.Reveal){
+          Reveal.on('slidechanged', checkLastSlide);
+          Reveal.on('ready',        checkLastSlide);
+        }
+      });
+    }
+  });
+})();
+</script>
+</body></html>

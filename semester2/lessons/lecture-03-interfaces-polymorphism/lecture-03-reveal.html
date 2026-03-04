@@ -1,0 +1,449 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Лекция 3 — Интерфейсы, абстрактные классы, полиморфизм</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--red:#e94560;--blue:#58a6ff;--green:#56d364;--orange:#ffa657;--purple:#d2a8ff;--bg:#0f0f1a;--bg2:#1a1a2e;--bg3:#16213e;--text:#e2e8f0;--muted:#a0aec0;--dim:#cbd5e0;}
+    .reveal-viewport{background:var(--bg);}.reveal{font-family:'Inter',sans-serif;font-size:23px;color:var(--text);}
+    .reveal h1{font-weight:800;color:var(--text);font-size:1.55em;border-bottom:3px solid var(--red);padding-bottom:.2em;margin-bottom:.4em;text-transform:none;}
+    .reveal h2{font-weight:800;color:var(--red);font-size:1.2em;text-transform:none;}
+    .reveal h3{font-weight:600;color:var(--blue);font-size:.86em;text-transform:none;margin:.3em 0 .15em;}
+    .reveal p,.reveal li{color:var(--dim);line-height:1.6;}.reveal strong{color:var(--orange);}.reveal a{color:var(--blue);}
+    .slide-title{background:linear-gradient(145deg,var(--bg) 0%,var(--bg3) 100%)!important;}
+    .slide-title h1{font-size:1.9em;color:var(--red);border:none;padding:0;}
+    .slide-title h2{color:var(--muted);font-size:.95em;font-weight:400;}
+    .slide-section{background:linear-gradient(135deg,var(--bg) 0%,var(--bg3) 100%)!important;}
+    .slide-section h2{font-size:1.8em;font-weight:800;color:var(--red);border-left:6px solid var(--red);padding-left:.4em;}
+    .slide-section p{color:var(--muted);font-size:.8em;}
+    .badge{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:.5em;padding:.3em 1em;border-radius:20px;margin:.25em .2em 0;}
+    .badge.blue{background:var(--blue);}.badge.green{background:#238636;}
+    .cols{display:grid;grid-template-columns:1fr 1fr;gap:.9em;}
+    .cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.7em;}
+    .card{background:var(--bg2);border-radius:10px;padding:.55em .8em;border-top:3px solid var(--red);}
+    .card h3{font-size:.78em;margin:0 0 .2em;}.card p{font-size:.68em;color:var(--muted);margin:0;}
+    .card.red{border-color:var(--red);}.card.red h3{color:var(--red);}
+    .card.blue{border-color:var(--blue);}.card.blue h3{color:var(--blue);}
+    .card.green{border-color:var(--green);}.card.green h3{color:var(--green);}
+    .card.orange{border-color:var(--orange);}.card.orange h3{color:var(--orange);}
+    .box{background:var(--bg2);border:1px solid var(--red);border-radius:8px;padding:.38em .75em;margin:.35em 0;}
+    .box .label{font-size:.54em;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--red);margin-bottom:.1em;}
+    .box p{font-size:.73em;margin:0;color:var(--text);}
+    .box.blue{border-color:var(--blue);}.box.blue .label{color:var(--blue);}
+    .box.green{border-color:var(--green);}.box.green .label{color:var(--green);}
+    .box.orange{border-color:var(--orange);}.box.orange .label{color:var(--orange);}
+    .pros{background:#0d2818;border:1px solid #238636;border-radius:8px;padding:.45em .75em;}
+    .cons{background:#2d1117;border:1px solid #da3633;border-radius:8px;padding:.45em .75em;}
+    .pros h3{color:var(--green)!important;font-size:.78em;margin-bottom:.18em;}
+    .cons h3{color:#f85149!important;font-size:.78em;margin-bottom:.18em;}
+    .pros li::marker{color:var(--green);}.cons li::marker{color:#f85149;}
+    .pros li,.cons li{font-size:.73em;color:var(--dim);}
+    .reveal table{width:100%;border-collapse:collapse;font-size:.7em;}
+    .reveal th{background:var(--bg2);color:var(--red);padding:.32em .55em;text-align:left;border:1px solid #30363d;}
+    .reveal td{padding:.28em .55em;border:1px solid #30363d;color:var(--dim);}
+    .reveal tr:nth-child(even) td{background:var(--bg2);}
+    .reveal pre{border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.5);font-size:.57em;margin:.3em 0;width:100%;}
+    .reveal code{font-family:'JetBrains Mono',monospace;}
+    .reveal :not(pre)>code{background:var(--bg2);color:var(--orange);padding:.1em .3em;border-radius:4px;font-size:.8em;}
+    blockquote{border-left:4px solid var(--red);padding:.35em .8em;background:var(--bg2);border-radius:0 8px 8px 0;font-style:italic;color:var(--muted);margin:.4em 0;font-size:.88em;}
+    blockquote strong{color:var(--red);}
+    .checklist{list-style:none;padding-left:0;}
+    .checklist li::before{content:'✅  ';}
+    .checklist li{margin-bottom:.25em;font-size:.78em;color:var(--dim);}
+    .muted{color:var(--muted)!important;}
+    .reveal .progress{color:var(--red);}.reveal .controls{color:var(--red);}
+    .reveal .slide-number{color:#4a5568;font-size:.65em;}
+  </style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+
+<section class="slide-title" data-background-gradient="linear-gradient(145deg,#0f0f1a 0%,#0f3460 100%)">
+  <h1>☕ Интерфейсы и абстрактные классы</h1>
+  <h2>Полиморфизм, перегрузка и переопределение</h2>
+  <p class="muted" style="margin-top:.5em;">Семестр 2 · Лекция 3 из 19 · Java OOP</p>
+  <div style="margin-top:.7em;"><span class="badge">Интерфейсы</span><span class="badge blue">Полиморфизм</span><span class="badge green">Abstract</span></div>
+</section>
+
+<section>
+  <h1>🗂️ План лекции</h1>
+  <div class="cols">
+    <ol style="font-size:.8em;">
+      <li>Абстрактные классы — зачем?</li>
+      <li>Интерфейсы — контракт</li>
+      <li>Abstract vs Interface</li>
+      <li>Полиморфизм</li>
+      <li>Перегрузка (Overloading)</li>
+    </ol>
+    <ol start="6" style="font-size:.8em;">
+      <li>Переопределение (Overriding)</li>
+      <li>Overloading vs Overriding</li>
+      <li>Default-методы (Java 8+)</li>
+      <li>Функциональные интерфейсы</li>
+      <li>Итоги и домашнее задание</li>
+    </ol>
+  </div>
+</section>
+
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>1. Абстрактные классы</h2><p>Шаблон с неполной реализацией</p>
+</section>
+
+<section>
+  <h1>Abstract class — шаблон для наследников</h1>
+  <div class="cols">
+    <pre><code class="language-java">public abstract class Shape {
+    protected String color;
+    protected String name;
+
+    public Shape(String color, String name) {
+        this.color = color;
+        this.name  = name;
+    }
+
+    // Абстрактный — ОБЯЗАН быть реализован
+    public abstract double area();
+    public abstract double perimeter();
+
+    // Обычный — общий для всех
+    public void printInfo() {
+        System.out.printf(
+          "%s [%s] — S=%.2f, P=%.2f%n",
+          name, color, area(), perimeter());
+    }
+}
+
+public class Circle extends Shape {
+    private double radius;
+    public Circle(String color, double r) {
+        super(color, "Круг");
+        this.radius = r;
+    }
+    @Override
+    public double area() {
+        return Math.PI * radius * radius;
+    }
+    @Override
+    public double perimeter() {
+        return 2 * Math.PI * radius;
+    }
+}</code></pre>
+    <div>
+      <pre><code class="language-java">public class Rectangle extends Shape {
+    private double w, h;
+    public Rectangle(String c,
+                     double w, double h){
+        super(c, "Прямоугольник");
+        this.w = w; this.h = h;
+    }
+    @Override public double area()
+        { return w * h; }
+    @Override public double perimeter()
+        { return 2*(w+h); }
+}
+
+// Полиморфизм
+Shape[] shapes = {
+    new Circle("красный", 5),
+    new Rectangle("синий", 4, 6)
+};
+for (Shape s : shapes) s.printInfo();
+// Круг [красный] — S=78.54, P=31.42
+// Прямоугольник [синий] — S=24.00</code></pre>
+      <div class="box orange" style="margin-top:.4em;">
+        <div class="label">Нельзя создать abstract</div>
+        <p><code>new Shape("red","x")</code> → ❌ compile error!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>2. Интерфейсы</h2><p>Контракт — ЧТО умеет, но не КАК</p>
+</section>
+
+<section>
+  <h1>Interface — контракт без реализации</h1>
+  <div class="cols">
+    <pre><code class="language-java">// Интерфейс — сигнатуры методов
+public interface Drawable {
+    void draw();
+    void resize(double factor);
+}
+
+public interface Saveable {
+    void save(String filename);
+    void load(String filename);
+}
+
+// Класс реализует НЕСКОЛЬКО интерфейсов
+public class Canvas
+        implements Drawable, Saveable {
+
+    private String content;
+
+    @Override public void draw() {
+        System.out.println("Рисую: "
+          + content);
+    }
+    @Override public void resize(double f){
+        System.out.println("Масштаб: "+f);
+    }
+    @Override public void save(String f) {
+        System.out.println("Сохранено: "+f);
+    }
+    @Override public void load(String f) {
+        System.out.println("Загружено: "+f);
+    }
+}</code></pre>
+    <div>
+      <table style="margin-bottom:.5em;">
+        <thead><tr><th></th><th>Abstract Class</th><th>Interface</th></tr></thead>
+        <tbody>
+          <tr><td>Создать объект</td><td>❌</td><td>❌</td></tr>
+          <tr><td>Поля</td><td>Любые</td><td>только static final</td></tr>
+          <tr><td>Конструктор</td><td>✅</td><td>❌</td></tr>
+          <tr><td>Наследование</td><td>одиночное</td><td>множественное</td></tr>
+          <tr><td>Реализация</td><td>частичная</td><td>default (Java 8)</td></tr>
+        </tbody>
+      </table>
+      <div class="box">
+        <div class="label">Правило выбора</div>
+        <p>"Это ЧТО?" → abstract class (Animal → Dog)<br/>
+        "Это УМЕЕТ?" → interface (Flyable, Drawable)</p>
+      </div>
+      <pre><code class="language-java">// Tesla — IS-A Car + УМЕЕТ Electric
+class Tesla extends Car
+      implements Electric, Autonomous {
+    @Override void charge()
+        { System.out.println("Заряжаюсь⚡"); }
+    @Override void selfDrive()
+        { System.out.println("Еду сам 🤖"); }
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>3. Перегрузка vs Переопределение</h2><p>Overloading vs Overriding</p>
+</section>
+
+<section>
+  <h1>Overloading (перегрузка) — compile time</h1>
+  <div class="cols">
+    <pre><code class="language-java">public class Calculator {
+    // По типу параметра
+    public int add(int a, int b) {
+        return a + b;
+    }
+    public double add(double a, double b) {
+        return a + b;
+    }
+    public String add(String a, String b) {
+        return a + b;
+    }
+    // По количеству параметров
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+}
+
+Calculator c = new Calculator();
+c.add(1, 2);         // int + int
+c.add(1.5, 2.5);     // double + double
+c.add("Hi", " World"); // String+String</code></pre>
+    <div>
+      <pre><code class="language-java">// ── Overriding (переопределение) ─────
+// Runtime — динамический dispatch!
+public class Logger {
+    public void log(String msg) {
+        System.out.println("[LOG] "+msg);
+    }
+}
+public class FileLogger extends Logger {
+    private String file;
+    public FileLogger(String file) {
+        this.file = file;
+    }
+    @Override public void log(String msg) {
+        System.out.println(
+          "[FILE:"+file+"] "+msg);
+    }
+}
+
+Logger l1 = new Logger();
+Logger l2 = new FileLogger("app.log");
+
+l1.log("Старт"); // [LOG] Старт
+l2.log("Старт"); // [FILE:app.log] Старт
+// ← вызывается по РЕАЛЬНОМУ типу!</code></pre>
+      <table style="margin-top:.4em;font-size:.68em;">
+        <thead><tr><th></th><th>Overloading</th><th>Overriding</th></tr></thead>
+        <tbody>
+          <tr><td>Параметры</td><td>разные</td><td>одинаковые</td></tr>
+          <tr><td>Где</td><td>один класс</td><td>родитель→наследник</td></tr>
+          <tr><td>Решается</td><td>compile time</td><td>runtime</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>4. Default-методы и функциональные интерфейсы</h2><p>Java 8+</p>
+</section>
+
+<section>
+  <h1>Default-методы и @FunctionalInterface</h1>
+  <div class="cols">
+    <pre><code class="language-java">public interface Notification {
+    // Абстрактный — обязателен
+    void send(String message);
+
+    // Default — реализация по умолчанию
+    default void sendWithTimestamp(
+                         String message) {
+        send("[" +
+          LocalDateTime.now() + "] "
+          + message);
+    }
+
+    // Static — утилитный метод
+    static boolean isValid(String msg) {
+        return msg != null && !msg.isBlank();
+    }
+}
+
+class EmailNotification
+        implements Notification {
+    private String email;
+    EmailNotification(String e)
+        { this.email = e; }
+
+    @Override
+    public void send(String msg) {
+        System.out.println(
+          "Email→"+email+": "+msg);
+    }
+    // sendWithTimestamp — дефолтный
+}</code></pre>
+    <div>
+      <pre><code class="language-java">// @FunctionalInterface
+// — ровно ОДИН абстрактный метод
+@FunctionalInterface
+public interface Validator&lt;T&gt; {
+    boolean validate(T value);
+
+    default Validator&lt;T&gt; and(
+               Validator&lt;T&gt; other) {
+        return v -> this.validate(v)
+                 && other.validate(v);
+    }
+}
+
+// Используем с лямбдами!
+Validator&lt;String&gt; notEmpty =
+    s -> !s.isBlank();
+Validator&lt;String&gt; shortEnough =
+    s -> s.length() &lt;= 20;
+
+Validator&lt;String&gt; usernameOk =
+    notEmpty.and(shortEnough);
+
+System.out.println(
+    usernameOk.validate("johndoe")); // true
+System.out.println(
+    usernameOk.validate(""));        // false</code></pre>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h1>📌 Итоги</h1>
+  <div class="cols">
+    <ul class="checklist">
+      <li><strong>Abstract class</strong> — шаблон, нельзя создать объект</li>
+      <li><strong>Interface</strong> — контракт, множественная реализация</li>
+      <li><strong>Полиморфизм</strong> — реальный тип определяет поведение</li>
+      <li><strong>Overloading</strong> — разные параметры, compile time</li>
+      <li><strong>Overriding</strong> — наследник заменяет метод, runtime</li>
+      <li><strong>default</strong> методы — реализация в интерфейсе (Java 8+)</li>
+      <li><strong>@FunctionalInterface</strong> — один метод → лямбда</li>
+    </ul>
+    <div class="card orange">
+      <h3>📝 Домашнее задание</h3>
+      <p>Система уведомлений:<br/>
+      Интерфейс <code>Notifiable</code><br/>
+      Классы: <code>EmailNotifier</code>, <code>TelegramNotifier</code>, <code>LogNotifier</code><br/>
+      Abstract <code>BaseNotifier</code> — список получателей<br/>
+      Продемонстрировать полиморфизм через <code>List&lt;Notifiable&gt;</code>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="slide-title" data-background-gradient="linear-gradient(145deg,#0f0f1a 0%,#0f3460 100%)">
+  <h1>Спасибо! ☕</h1>
+  <h2>Лекция 3 из 19 · Интерфейсы и полиморфизм</h2>
+  <p style="margin-top:.7em;color:var(--dim);font-size:.82em;"><strong style="color:var(--text);">Следующая →</strong> <span class="muted">Лекция 4: Enum и Singleton</span></p>
+  <div style="margin-top:.7em;"><span class="badge">Java</span><span class="badge blue">Interface</span><span class="badge green">Лекция 3</span></div>
+</section>
+
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/zoom/zoom.js"></script>
+<script>Reveal.initialize({hash:true,slideNumber:'c/t',progress:true,controls:true,center:false,transition:'slide',transitionSpeed:'fast',backgroundTransition:'fade',width:1280,height:720,margin:0.04,plugins:[RevealHighlight,RevealNotes,RevealZoom]});</script>
+<style>
+.lec-nav{position:fixed;bottom:0;left:0;right:0;z-index:9999;display:none;align-items:center;justify-content:center;gap:.75rem;padding:.75rem 1.5rem;background:rgba(15,15,26,.92);backdrop-filter:blur(12px);border-top:1px solid #30363d;font-family:'Inter',sans-serif;}
+.lec-nav.visible{display:flex;}
+.lec-nav a,.lec-nav button{display:inline-flex;align-items:center;gap:.4rem;padding:.45em 1.1em;border-radius:8px;font-size:.78rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all .15s;border:1px solid #30363d;background:#1a1a2e;color:#cbd5e0;}
+.lec-nav a:hover,.lec-nav button:hover{border-color:#58a6ff;color:#58a6ff;background:#0f0f1a;}
+.lec-nav .nav-next{background:#e94560;border-color:#e94560;color:#fff;}
+.lec-nav .nav-next:hover{background:#c73050;border-color:#c73050;color:#fff;}
+.lec-nav .nav-home{border-color:#30363d;}
+.lec-nav .nav-sep{width:1px;height:24px;background:#30363d;}
+.lec-nav .nav-label{font-size:.68rem;color:#8b949e;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;}
+</style>
+<div class="lec-nav" id="lecNav">
+  <a href="../lecture-02-classes-oop/lecture-02-reveal.html" class="nav-prev">&#8592; Классы и объекты</a><div class="nav-sep"></div>
+  <a href="../index.html" class="nav-home">&#9776; К списку</a>
+  <span class="nav-label">Лекция 3 из 19</span>
+  <div class="nav-sep"></div><a href="../lecture-04-enum-singleton/lecture-04-reveal.html" class="nav-next">Enum и Singleton &#8594;</a>
+</div>
+<script>
+(function(){
+  function checkLastSlide(){
+    if(!window.Reveal) return;
+    var idx   = Reveal.getIndices();
+    var total = Reveal.getTotalSlides();
+    var cur   = Reveal.getSlidePastCount() + 1;
+    var nav   = document.getElementById('lecNav');
+    if(!nav) return;
+    // show on last slide
+    if(cur >= total) nav.classList.add('visible');
+    else             nav.classList.remove('visible');
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    if(window.Reveal){
+      Reveal.on('slidechanged', checkLastSlide);
+      Reveal.on('ready',        checkLastSlide);
+    } else {
+      // wait for Reveal to init
+      window.addEventListener('load', function(){
+        if(window.Reveal){
+          Reveal.on('slidechanged', checkLastSlide);
+          Reveal.on('ready',        checkLastSlide);
+        }
+      });
+    }
+  });
+})();
+</script>
+</body></html>
+

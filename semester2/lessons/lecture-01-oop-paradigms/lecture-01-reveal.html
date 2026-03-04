@@ -1,0 +1,1165 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Лекция 1 — Парадигмы программирования | Java OOP</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --red:#e94560; --blue:#58a6ff; --green:#56d364;
+      --orange:#ffa657; --purple:#d2a8ff;
+      --bg:#0f0f1a; --bg2:#1a1a2e; --bg3:#16213e;
+      --text:#e2e8f0; --muted:#a0aec0; --dim:#cbd5e0;
+    }
+    .reveal-viewport { background:var(--bg); }
+    .reveal { font-family:'Inter',sans-serif; font-size:24px; color:var(--text); }
+
+    .reveal h1 { font-family:'Inter',sans-serif; font-weight:800; color:var(--text);
+      font-size:1.6em; border-bottom:3px solid var(--red); padding-bottom:.2em;
+      margin-bottom:.4em; text-transform:none; letter-spacing:-.01em; }
+    .reveal h2 { font-family:'Inter',sans-serif; font-weight:800; color:var(--red);
+      font-size:1.25em; text-transform:none; }
+    .reveal h3 { font-family:'Inter',sans-serif; font-weight:600; color:var(--blue);
+      font-size:.88em; text-transform:none; margin:.35em 0 .2em; }
+    .reveal p, .reveal li { color:var(--dim); line-height:1.6; }
+    .reveal strong { color:var(--orange); }
+    .reveal em { color:var(--muted); }
+    .reveal a { color:var(--blue); }
+
+    .slide-title { background:linear-gradient(145deg,var(--bg) 0%,var(--bg3) 100%) !important; }
+    .slide-title h1 { font-size:2em; color:var(--red); border:none; padding:0; }
+    .slide-title h2 { color:var(--muted); font-size:1em; font-weight:400; }
+    .slide-section { background:linear-gradient(135deg,var(--bg) 0%,var(--bg3) 100%) !important; }
+    .slide-section h2 { font-size:1.9em; font-weight:800; color:var(--red);
+      border-left:6px solid var(--red); padding-left:.4em; }
+    .slide-section p { color:var(--muted); font-size:.82em; }
+
+    .badge { display:inline-block; background:var(--red); color:#fff; font-weight:700;
+      font-size:.5em; padding:.3em 1em; border-radius:20px; margin:.3em .2em 0; }
+    .badge.blue  { background:var(--blue); }
+    .badge.green { background:#238636; }
+
+    .cols  { display:grid; grid-template-columns:1fr 1fr;     gap:1em;  }
+    .cols3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:.75em; }
+
+    .card { background:var(--bg2); border-radius:10px; padding:.6em .85em; border-top:3px solid var(--red); }
+    .card h3 { font-size:.8em; margin:0 0 .2em; }
+    .card p  { font-size:.7em; color:var(--muted); margin:0; }
+    .card.red    { border-color:var(--red);    } .card.red    h3 { color:var(--red);    }
+    .card.blue   { border-color:var(--blue);   } .card.blue   h3 { color:var(--blue);   }
+    .card.green  { border-color:var(--green);  } .card.green  h3 { color:var(--green);  }
+    .card.orange { border-color:var(--orange); } .card.orange h3 { color:var(--orange); }
+    .card.purple { border-color:var(--purple); } .card.purple h3 { color:var(--purple); }
+
+    .box { background:var(--bg2); border:1px solid var(--red); border-radius:8px;
+      padding:.4em .8em; margin:.4em 0; }
+    .box .label { font-size:.56em; font-weight:700; text-transform:uppercase;
+      letter-spacing:.08em; color:var(--red); margin-bottom:.12em; }
+    .box p { font-size:.75em; margin:0; color:var(--text); }
+    .box.blue   { border-color:var(--blue);   } .box.blue   .label { color:var(--blue);   }
+    .box.green  { border-color:var(--green);  } .box.green  .label { color:var(--green);  }
+    .box.orange { border-color:var(--orange); } .box.orange .label { color:var(--orange); }
+
+    .pros { background:#0d2818; border:1px solid #238636; border-radius:8px; padding:.5em .8em; }
+    .cons { background:#2d1117; border:1px solid #da3633; border-radius:8px; padding:.5em .8em; }
+    .pros h3 { color:var(--green) !important; font-size:.8em; margin-bottom:.2em; }
+    .cons h3 { color:#f85149    !important; font-size:.8em; margin-bottom:.2em; }
+    .pros li::marker { color:var(--green); } .cons li::marker { color:#f85149; }
+    .pros li, .cons li { font-size:.75em; color:var(--dim); }
+
+    .reveal table { width:100%; border-collapse:collapse; font-size:.72em; }
+    .reveal th { background:var(--bg2); color:var(--red); padding:.35em .6em;
+      text-align:left; border:1px solid #30363d; }
+    .reveal td { padding:.3em .6em; border:1px solid #30363d; color:var(--dim); }
+    .reveal tr:nth-child(even) td { background:var(--bg2); }
+
+    .reveal pre { border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,.5);
+      font-size:.58em; margin:.35em 0; width:100%; }
+    .reveal code { font-family:'JetBrains Mono',monospace; }
+    .reveal :not(pre)>code { background:var(--bg2); color:var(--orange);
+      padding:.1em .3em; border-radius:4px; font-size:.8em; }
+
+    .timeline { padding-left:1em; border-left:3px solid var(--red); }
+    .timeline-item { margin-bottom:.4em; }
+    .timeline-item .year { color:var(--red); font-weight:700; font-size:.78em; }
+    .timeline-item .desc { color:var(--muted); font-size:.75em; }
+
+    .checklist { list-style:none; padding-left:0; }
+    .checklist li::before { content:'✅  '; }
+    .checklist li { margin-bottom:.28em; font-size:.8em; color:var(--dim); }
+
+    blockquote { border-left:4px solid var(--red); padding:.35em .8em;
+      background:var(--bg2); border-radius:0 8px 8px 0;
+      font-style:italic; color:var(--muted); margin:.4em 0; font-size:.9em; }
+    blockquote strong { color:var(--red); }
+
+    .warn { background:#2d1a00; border:1px solid #9e6a03; border-radius:8px;
+      padding:.45em .8em; margin:.4em 0; font-size:.75em; color:var(--dim); }
+    .warn .label { color:var(--orange); font-weight:700; font-size:.85em; margin-bottom:.1em; }
+
+    .small  { font-size:.74em !important; }
+    .xsmall { font-size:.64em !important; }
+    .muted  { color:var(--muted) !important; }
+
+    .reveal .progress { color:var(--red); }
+    .reveal .controls { color:var(--red); }
+    .reveal .slide-number { color:#4a5568; font-size:.65em; }
+  </style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+
+<!-- ══ TITLE ══ -->
+<section class="slide-title" data-background-gradient="linear-gradient(145deg,#0f0f1a 0%,#0f3460 100%)">
+  <h1>☕ Введение в ООП</h1>
+  <h2>История и Парадигмы Программирования</h2>
+  <p class="muted" style="margin-top:.5em;">Семестр 2 &nbsp;·&nbsp; Лекция 1 из 19 &nbsp;·&nbsp; Java Course</p>
+  <div style="margin-top:.7em;">
+    <span class="badge">Java</span>
+    <span class="badge blue">ООП</span>
+    <span class="badge green">Парадигмы</span>
+  </div>
+</section>
+
+<!-- ══ PLAN ══ -->
+<section>
+  <h1>🗂️ План лекции</h1>
+  <div class="cols">
+    <ol style="font-size:.82em;">
+      <li>Что такое парадигма?</li>
+      <li>История языков программирования</li>
+      <li>Императивное программирование</li>
+      <li>Процедурное программирование</li>
+      <li>Объектно-ориентированное (ООП)</li>
+    </ol>
+    <ol start="6" style="font-size:.82em;">
+      <li>Функциональное программирование</li>
+      <li>Декларативное программирование</li>
+      <li>Сравнение парадигм</li>
+      <li>Java — мультипарадигменный язык</li>
+      <li>Практика и домашнее задание</li>
+    </ol>
+  </div>
+  <div class="box">
+    <div class="label">Главная мысль лекции</div>
+    <p><strong>Нет «лучшей» парадигмы</strong> — каждая решает свои задачи. Java поддерживает их все.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 1 — ЧТО ТАКОЕ ПАРАДИГМА
+══════════════════════════════════════════════════ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>1. Что такое парадигма?</h2>
+  <p>Базовые понятия и аналогии</p>
+</section>
+
+<section>
+  <h1>Что такое парадигма программирования?</h1>
+  <blockquote><strong>Парадигма</strong> — это стиль, метод и способ мышления при написании программ.</blockquote>
+  <div class="cols3" style="margin-top:.6em;">
+    <div class="card orange"><h3>🧱 Структура кода</h3><p>Как организованы модули, классы, функции</p></div>
+    <div class="card green"><h3>💾 Состояние</h3><p>Где живут данные и кто их меняет</p></div>
+    <div class="card blue"><h3>⚙️ Поток выполнения</h3><p>КАК или ЧТО — способ описания алгоритма</p></div>
+  </div>
+  <div class="box" style="margin-top:.6em;">
+    <div class="label">Аналогия</div>
+    <p>Парадигма — это <strong>архитектурный стиль</strong> в строительстве. Построить дом можно в стиле классики, хай-тека или минимализма — цель одна, подход разный.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 2 — ИСТОРИЯ
+══════════════════════════════════════════════════ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>2. История языков программирования</h2>
+  <p>От машинного кода до Java 21</p>
+</section>
+
+<section>
+  <h1>История — кратко</h1>
+  <div class="cols">
+    <div class="timeline">
+      <div class="timeline-item"><div class="year">1950-е</div><div class="desc">Машинный код, Ассемблер — всё вручную</div></div>
+      <div class="timeline-item"><div class="year">1960-е</div><div class="desc">FORTRAN, COBOL — процедурное</div></div>
+      <div class="timeline-item"><div class="year">1970-е</div><div class="desc">C, Pascal — структурное/процедурное</div></div>
+      <div class="timeline-item"><div class="year">1980-е</div><div class="desc">C++, Smalltalk — появление ООП</div></div>
+      <div class="timeline-item"><div class="year">1995 ☕</div><div class="desc"><strong style="color:var(--orange)">Java 1.0</strong> — «Write once, run anywhere»</div></div>
+      <div class="timeline-item"><div class="year">2000-е</div><div class="desc">Scala, Kotlin, F# — ФП + ООП</div></div>
+      <div class="timeline-item"><div class="year">2014 ⭐</div><div class="desc"><strong style="color:var(--orange)">Java 8</strong> — Лямбды, Stream API</div></div>
+      <div class="timeline-item"><div class="year">2010-е</div><div class="desc">Rust, Swift, Go — современные подходы</div></div>
+    </div>
+    <div>
+      <div class="card red"    style="margin-bottom:.4em;"><h3>Машинный код → Проблема</h3><p>Слишком сложно писать и читать</p></div>
+      <div class="card orange" style="margin-bottom:.4em;"><h3>Процедурный → Проблема</h3><p>Глобальное состояние, «спагетти-код»</p></div>
+      <div class="card blue"   style="margin-bottom:.4em;"><h3>ООП → Проблема</h3><p>Трудно с параллельным программированием</p></div>
+      <div class="box green">
+        <div class="label">Ключевая мысль</div>
+        <p>Каждая новая парадигма появлялась как <strong>ответ на проблемы</strong> предыдущей.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 3 — ИМПЕРАТИВНОЕ
+══════════════════════════════════════════════════ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>3. Императивное программирование</h2>
+  <p>Говоришь КАК делать — шаг за шагом</p>
+</section>
+
+<!-- Assembler -->
+<section>
+  <h1>Ассемблер — прародитель императивного стиля</h1>
+  <blockquote>В ассемблере каждая строка — <strong>буквально одна команда процессору</strong>. Никакой абстракции.</blockquote>
+  <div class="cols">
+    <pre><code class="language-x86asm">; Ассемблер x86 — сумма от 1 до 5
+; int sum=0; for(int i=1;i<=5;i++) sum+=i;
+
+section .data
+    result dd 0      ; int result = 0
+
+section .text
+    global _start
+_start:
+    mov eax, 0       ; eax = sum = 0
+    mov ecx, 1       ; ecx = i = 1
+loop_start:
+    cmp ecx, 5       ; i == 5 ?
+    jg  done         ; если i > 5 → выход
+    add eax, ecx     ; sum += i
+    inc ecx          ; i++
+    jmp loop_start   ; повторить
+done:
+    mov [result], eax ; сохранить → 15</code></pre>
+    <div>
+      <p style="font-size:.78em;color:var(--muted);margin-bottom:.3em;">Тот же код на Java:</p>
+      <pre><code class="language-java">int sum = 0;
+int[] numbers = {1, 2, 3, 4, 5};
+
+for (int i = 0; i < numbers.length; i++) {
+    sum = sum + numbers[i];
+}
+// → 15</code></pre>
+      <table style="margin-top:.5em;">
+        <thead><tr><th>Ассемблер</th><th>Java</th></tr></thead>
+        <tbody>
+          <tr><td><code>mov eax, 0</code></td><td><code>int sum = 0;</code></td></tr>
+          <tr><td><code>add eax, ecx</code></td><td><code>sum += i;</code></td></tr>
+          <tr><td><code>cmp</code> + <code>jg</code></td><td><code>if / break</code></td></tr>
+          <tr><td><code>jmp loop_start</code></td><td><code>for / while</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Imperative languages -->
+<section>
+  <h1>Императивное — представители и итоги</h1>
+  <div class="cols">
+    <div>
+      <table>
+        <thead><tr><th>Язык</th><th>Год</th><th>Особенность</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Ассемблер</strong></td><td>1950-е</td><td>Прямое управление регистрами и памятью</td></tr>
+          <tr><td><strong>Fortran</strong></td><td>1957</td><td>Первый ЯВУ. Суперкомпьютеры до сих пор</td></tr>
+          <tr><td><strong>COBOL</strong></td><td>1959</td><td>300 млрд строк в банках мира!</td></tr>
+          <tr><td><strong>BASIC</strong></td><td>1964</td><td>Первый язык Билла Гейтса</td></tr>
+        </tbody>
+      </table>
+      <div class="pros" style="margin-top:.5em;">
+        <h3>✅ Плюсы</h3>
+        <ul><li>Полный контроль, максимальная производительность</li><li>Понятная последовательность шагов</li></ul>
+      </div>
+    </div>
+    <div>
+      <div class="cons" style="margin-bottom:.5em;">
+        <h3>❌ Минусы</h3>
+        <ul>
+          <li>Много «шума» в коде</li>
+          <li>Сложно масштабировать</li>
+          <li>Легко ошибиться со состоянием</li>
+          <li>Ассемблер привязан к архитектуре CPU</li>
+        </ul>
+      </div>
+      <div class="warn">
+        <div class="label">⚠️ Главная проблема</div>
+        Чем больше программа — тем больше мест, где состояние <strong style="color:var(--orange)">неожиданно меняется</strong>. Это источник трудноуловимых багов.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Imperative → FP solution -->
+<section>
+  <h1>⚠️ Проблема: побочные эффекты</h1>
+  <div class="cols">
+    <div>
+      <p class="small muted" style="margin-bottom:.3em;">❌ Классическая ловушка:</p>
+      <pre><code class="language-java">public class OrderProcessor {
+  // глобальное состояние — источник боли
+  private static double totalRevenue = 0;
+
+  public static double applyDiscount(
+                    double price, int age) {
+    if (age < 18) {
+      price = price * 0.9;
+      totalRevenue += price;  // ❌ побочный
+    } else {                  //    эффект!
+      totalRevenue += price;
+    }
+    return price;
+  }
+}
+// Что в totalRevenue? 90? 290? 300?
+// Нужно читать всю функцию — это проблема</code></pre>
+    </div>
+    <div>
+      <p class="small muted" style="margin-bottom:.3em;">✅ Функциональное решение:</p>
+      <pre><code class="language-java">// Чистая функция — нет побочных эффектов
+public static double applyDiscount(
+                  double price, int age) {
+  return age < 18 ? price * 0.9 : price;
+  // зависит ТОЛЬКО от аргументов
+}
+
+// Накопление — явная отдельная операция
+public static double calcRevenue(
+                  List&lt;Double&gt; prices) {
+  return prices.stream()
+      .reduce(0.0, Double::sum);
+}</code></pre>
+      <table style="margin-top:.4em; font-size:.7em;">
+        <thead><tr><th>Проблема</th><th>Решение</th></tr></thead>
+        <tbody>
+          <tr><td>Глобальное состояние</td><td>Иммутабельные данные</td></tr>
+          <tr><td>Побочные эффекты</td><td>Чистые функции</td></tr>
+          <tr><td>Гонка потоков</td><td>Нет общего состояния</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 4 — ПРОЦЕДУРНОЕ
+══════════════════════════════════════════════════ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>4. Процедурное программирование</h2>
+  <p>Разделяй и властвуй</p>
+</section>
+
+<section>
+  <h1>Процедурное — основа и представители</h1>
+  <div class="cols">
+    <div>
+      <blockquote>Расширение императивного — код разбивается на <strong>процедуры (функции)</strong>.</blockquote>
+      <pre><code class="language-java">public class Calculator {
+
+  public static int sum(int[] nums) {
+    int result = 0;
+    for (int n : nums) result += n;
+    return result;
+  }
+
+  public static double average(int[] nums) {
+    return (double) sum(nums) / nums.length;
+  }
+
+  public static void main(String[] args) {
+    int[] data = {10, 20, 30, 40, 50};
+    System.out.println(sum(data));     // 150
+    System.out.println(average(data)); // 30.0
+  }
+}</code></pre>
+    </div>
+    <div>
+      <table style="margin-bottom:.5em;">
+        <thead><tr><th>Язык</th><th>Год</th><th>Особенность</th></tr></thead>
+        <tbody>
+          <tr><td><strong>C</strong></td><td>1972</td><td>Основа Linux, Windows, JVM</td></tr>
+          <tr><td><strong>Pascal</strong></td><td>1970</td><td>Создан для обучения</td></tr>
+          <tr><td><strong>PHP</strong></td><td>1994</td><td>78% сайтов в интернете</td></tr>
+          <tr><td><strong>Lua</strong></td><td>1993</td><td>Roblox, World of Warcraft</td></tr>
+        </tbody>
+      </table>
+      <div class="pros" style="margin-bottom:.4em;">
+        <h3>✅ Плюсы</h3>
+        <ul><li>Переиспользование через функции</li><li>Легче читать и тестировать</li></ul>
+      </div>
+      <div class="cons">
+        <h3>❌ Минусы</h3>
+        <ul><li>Глобальное состояние — источник ошибок</li><li>Данные и поведение разделены</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Animals example — procedural -->
+<section>
+  <h1>⚠️ Проблема: данные и поведение живут отдельно</h1>
+  <div class="box blue" style="margin-bottom:.4em;">
+    <div class="label">Задача</div>
+    <p>Собака (100 💪), Кот (40 😿), Рыжий кот (70 🦊) · Состояние: день/ночь · Проверка энергии перед действием</p>
+  </div>
+  <div class="cols">
+    <pre><code class="language-java">static String[] names  = {"Рекс","Барсик","Рыжик"};
+static String[] types  = {"dog","cat","ginger_cat"};
+static int[]    energy = {100,   40,    70};
+
+static boolean hasEnergy(int i, int req) {
+  return energy[i] >= req;
+}
+static void hunt(int i) {
+  if (!hasEnergy(i, 10)) { sleep(i); return; }
+  energy[i] -= 10;
+  System.out.println(names[i]+" охотится 🐾");
+}
+static void goWild(int i) {
+  if (!hasEnergy(i, 5)) { sleep(i); return; }
+  energy[i] -= 5;
+  System.out.println(names[i]+" дурееет 🌀");
+}
+static void sleep(int i) {
+  energy[i] += 20;
+  System.out.println(names[i]+" спит 💤");
+}</code></pre>
+    <div>
+      <pre><code class="language-java">static void tick(int i,
+                 String time, Random rnd) {
+  if (types[i].equals("dog")) {
+    if (time.equals("day")) hunt(i);
+    else sleep(i);
+  } else if (types[i].equals("cat")) {
+    if (time.equals("night")) hunt(i);
+    else sleep(i);
+  } else if (
+      types[i].equals("ginger_cat")) {
+    if (time.equals("night")) {
+      if (rnd.nextBoolean()) hunt(i);
+      else sleep(i);    // 50/50
+    } else {
+      goWild(i);        // днём дуреет
+    }
+  }
+  // ❌ новое животное = новый else if!
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- Animals example — OOP solution -->
+<section>
+  <h1>💡 Решение: каждое животное знает своё поведение</h1>
+  <div class="cols">
+    <pre><code class="language-java">abstract class Animal {
+  protected final String name;
+  protected int energy;
+  private static final int HUNT_COST  = 10;
+  private static final int WILD_COST  = 5;
+  private static final int SLEEP_GAIN = 20;
+
+  Animal(String name, int energy) {
+    this.name = name; this.energy = energy;
+  }
+
+  abstract void tick(String timeOfDay);
+
+  protected boolean hasEnergy(int req) {
+    return energy >= req;
+  }
+  protected void hunt() {
+    if (!hasEnergy(HUNT_COST)) {
+      System.out.println(name+" устал 😴");
+      sleep(); return;
+    }
+    energy -= HUNT_COST;
+    System.out.println(name+" охотится 🐾");
+  }
+  protected void sleep() {
+    energy += SLEEP_GAIN;
+    System.out.println(name+" спит 💤");
+  }
+  protected void goWild() {
+    if (!hasEnergy(WILD_COST)) {
+      sleep(); return;
+    }
+    energy -= WILD_COST;
+    System.out.println(name+" дурееет 🌀");
+  }
+}</code></pre>
+    <div>
+      <pre><code class="language-java">class Dog extends Animal {
+  Dog(String n) { super(n, 100); }
+  @Override void tick(String t) {
+    if (t.equals("day")) hunt();
+    else sleep();
+  }
+}
+class Cat extends Animal {
+  Cat(String n) { super(n, 40); }
+  @Override void tick(String t) {
+    if (t.equals("night")) hunt();
+    else sleep();
+  }
+}
+class GingerCat extends Animal {
+  private final Random rnd = new Random();
+  GingerCat(String n) { super(n, 70); }
+  @Override void tick(String t) {
+    if (t.equals("night")) {
+      if (rnd.nextBoolean()) hunt();
+      else sleep();
+    } else { goWild(); }
+  }
+}
+// main — чистый!
+List&lt;Animal&gt; animals = Arrays.asList(
+  new Dog("Рекс"),
+  new Cat("Барсик"),
+  new GingerCat("Рыжик")
+);
+animals.forEach(a -> a.tick("day"));</code></pre>
+      <table style="font-size:.65em; margin-top:.4em;">
+        <thead><tr><th>Проблема процедурного</th><th>Решение ООП</th></tr></thead>
+        <tbody>
+          <tr><td>Данные и поведение разделены</td><td>Всё в одном объекте</td></tr>
+          <tr><td>Новый тип → менять <code>tick()</code></td><td>Новый класс, <code>tick()</code> не трогаем</td></tr>
+          <tr><td>Проверка энергии дублируется</td><td>Один раз в <code>Animal</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 5 — ООП
+══════════════════════════════════════════════════ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>5. Объектно-Ориентированное программирование</h2>
+  <p>Программа моделирует реальный мир</p>
+</section>
+
+<section>
+  <h1>ООП — 4 кита</h1>
+  <div class="cols">
+    <div>
+      <table>
+        <thead><tr><th>Принцип</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Инкапсуляция</strong></td><td>Скрытие деталей реализации</td></tr>
+          <tr><td><strong>Наследование</strong></td><td>Переиспользование через иерархию</td></tr>
+          <tr><td><strong>Полиморфизм</strong></td><td>Один интерфейс — разные реализации</td></tr>
+          <tr><td><strong>Абстракция</strong></td><td>Выделение важного, сокрытие лишнего</td></tr>
+        </tbody>
+      </table>
+      <table style="margin-top:.5em;">
+        <thead><tr><th>Язык</th><th>Год</th><th>Особенность</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Smalltalk</strong></td><td>1972</td><td>Первый чистый ООП-язык</td></tr>
+          <tr><td><strong>C++</strong></td><td>1985</td><td>Unreal Engine, системное ПО</td></tr>
+          <tr><td><strong>Java ☕</strong></td><td>1995</td><td>Наш язык курса!</td></tr>
+          <tr><td><strong>Python</strong></td><td>1991</td><td>Data Science, ML</td></tr>
+          <tr><td><strong>Kotlin</strong></td><td>2016</td><td>Официальный язык Android</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <pre><code class="language-java">public class BankAccount {
+  private String owner;
+  private double balance; // скрытое
+
+  public BankAccount(String owner,
+                     double balance) {
+    this.owner   = owner;
+    this.balance = balance;
+  }
+  public void deposit(double amount) {
+    if (amount > 0) balance += amount;
+  }
+  public void withdraw(double amount) {
+    if (amount > 0 && amount <= balance)
+      balance -= amount;
+    else
+      System.out.println("Нет средств!");
+  }
+  public double getBalance() {
+    return balance;
+  }
+}
+// Наследование
+class SavingsAccount extends BankAccount {
+  private double rate;
+  SavingsAccount(String o, double b, double r)
+  { super(o, b); rate = r; }
+  public void applyInterest() {
+    deposit(getBalance() * rate);
+  }
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- OOP fragile base class problem -->
+<section>
+  <h1>⚠️ Проблема ООП: хрупкий базовый класс</h1>
+  <div class="cols">
+    <div>
+      <pre><code class="language-java">// ❌ Неожиданная цепочка вызовов
+class Animal {
+  protected int energy = 100;
+  public void eat() {
+    energy += 30;
+  }
+  public void move() {
+    energy -= 10;
+  }
+}
+class Dog extends Animal {
+  @Override public void eat() {
+    super.eat();
+    move(); // ← скрытый вызов!
+    // energy: +30, -10 = +20
+  }
+}
+class GuideDog extends Dog {
+  @Override public void eat() {
+    super.eat(); // вызывает Dog.eat()!
+    move();      // ещё раз move()!
+    // итого: +30 -10 -10 = +10
+    // разработчик GuideDog не знал
+    // что Dog.eat() уже вызывает move()
+  }
+}</code></pre>
+    </div>
+    <div>
+      <pre><code class="language-java">// ✅ Решение — КОМПОЗИЦИЯ
+class EnergySystem {
+  private int energy;
+  EnergySystem(int e) { energy = e; }
+  public void consume(int n) {
+    energy -= n;
+  }
+  public void restore(int n) {
+    energy += n;
+  }
+  public int get() { return energy; }
+}
+class Dog {
+  private final String name;
+  // ← берём компонент, не наследуем
+  private final EnergySystem es;
+
+  Dog(String name) {
+    this.name = name;
+    this.es   = new EnergySystem(100);
+  }
+  public void eat() {
+    es.restore(30); // явно, без скрытых
+    // move() НЕ вызывается!
+  }
+  public void move() { es.consume(10); }
+}</code></pre>
+      <div class="box orange" style="margin-top:.4em;">
+        <div class="label">Принцип</div>
+        <p><strong>Предпочитай композицию наследованию</strong> — основа Spring DI</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 6 — ФУНКЦИОНАЛЬНОЕ
+══════════════════════════════════════════════════ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>6. Функциональное программирование</h2>
+  <p>Говоришь ЧТО вычислить</p>
+</section>
+
+<section>
+  <h1>Функциональное — концепции и примеры</h1>
+  <div class="cols">
+    <div>
+      <blockquote>Программа — набор <strong>чистых функций</strong> без побочных эффектов. Данные <strong>иммутабельны</strong>.</blockquote>
+      <pre><code class="language-java">List&lt;Integer&gt; numbers =
+    Arrays.asList(1,2,3,4,5,6,7,8,9,10);
+
+// Декларативно — ЧТО нужно сделать
+int result = numbers.stream()
+    .filter(n -> n % 2 == 0) // чётные
+    .map(n -> n * n)          // в квадрат
+    .reduce(0, Integer::sum); // сложить
+// → 220
+
+// ✅ Чистая функция
+static int multiply(int a, int b) {
+    return a * b; // только аргументы
+}
+// ❌ Нечистая — побочный эффект
+static int counter = 0;
+static int next() {
+    return ++counter; // меняет снаружи!
+}</code></pre>
+    </div>
+    <div>
+      <table style="margin-bottom:.5em;">
+        <thead><tr><th>Язык</th><th>Год</th><th>Особенность</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Lisp</strong></td><td>1958</td><td>Старейший ФП-язык</td></tr>
+          <tr><td><strong>Haskell</strong></td><td>1990</td><td>Эталон чистого ФП</td></tr>
+          <tr><td><strong>Erlang</strong></td><td>1986</td><td>Основа WhatsApp (2 млрд!)</td></tr>
+          <tr><td><strong>Scala</strong></td><td>2004</td><td>Twitter, Apache Spark</td></tr>
+          <tr><td><strong>Java 8+</strong></td><td>2014</td><td>Лямбды, Stream API</td></tr>
+        </tbody>
+      </table>
+      <div class="pros" style="margin-bottom:.4em;">
+        <h3>✅ Плюсы</h3>
+        <ul><li>Легко тестировать — нет состояния</li><li>Идеально для параллелизма</li></ul>
+      </div>
+      <div class="cons">
+        <h3>❌ Минусы</h3>
+        <ul><li>Сложнее для новичков</li><li>Реальный мир имеет состояние</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FP problem → OOP solution -->
+<section>
+  <h1>⚠️ Проблема ФП: реальный мир stateful</h1>
+  <div class="cols">
+    <div>
+      <pre><code class="language-java">// ❌ Иммутабельный подход — новый объект
+// на каждое изменение
+record BankAccountState(
+    String owner, double balance) {}
+
+static BankAccountState deposit(
+    BankAccountState acc, double amount) {
+  return new BankAccountState(
+      acc.owner(), acc.balance() + amount);
+  // ← новый объект в памяти!
+}
+
+BankAccountState acc =
+    new BankAccountState("Иван", 1000.0);
+acc = deposit(acc, 500.0); // новый объект
+acc = deposit(acc, 100.0); // ещё один
+// При 1000 транзакций/сек
+// → 1000 новых объектов/сек → давление GC
+// Где история? Кто владелец?</code></pre>
+    </div>
+    <div>
+      <pre><code class="language-java">// ✅ ООП — состояние инкапсулировано
+public class BankAccount {
+  private double balance;
+  private final List&lt;String&gt; history
+      = new ArrayList&lt;&gt;();
+
+  public void deposit(double amount) {
+    balance += amount; // меняем — нормально
+    history.add("+"+amount+" → "+balance);
+  }
+
+  // ФП внутри ООП — лучшее из двух миров!
+  public double getTotalDeposited() {
+    return history.stream()
+      .filter(h -> h.startsWith("+"))
+      // ...
+      .sum();
+  }
+}</code></pre>
+      <table style="font-size:.68em; margin-top:.4em;">
+        <thead><tr><th>Проблема ФП</th><th>Решение ООП</th></tr></thead>
+        <tbody>
+          <tr><td>Новый объект → нагрузка GC</td><td>Один объект живёт и меняется</td></tr>
+          <tr><td>Нет истории изменений</td><td>Объект сам ведёт историю</td></tr>
+          <tr><td>Нет чёткого владельца</td><td>Объект — единственный владелец</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="box green" style="margin-top:.3em;">
+    <div class="label">Итог</div>
+    <p>ФП и ООП — <strong>союзники</strong>: ООП = структура и состояние, ФП = трансформации данных (Stream API)</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 7 — ДЕКЛАРАТИВНОЕ
+══════════════════════════════════════════════════ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>7. Декларативное программирование</h2>
+  <p>Описываешь ЧТО получить</p>
+</section>
+
+<section>
+  <h1>Декларативное — примеры везде</h1>
+  <div class="cols">
+    <div>
+      <pre><code class="language-sql">-- SQL — чистый декларативный язык
+SELECT name, salary
+FROM employees
+WHERE department = 'IT'
+ORDER BY salary DESC;</code></pre>
+      <pre><code class="language-java">// Java Streams — декларативный стиль
+List&lt;String&gt; result = employees.stream()
+  .filter(e ->
+      e.getDepartment().equals("IT"))
+  .sorted(Comparator.comparing(
+      Employee::getSalary).reversed())
+  .map(Employee::getName)
+  .collect(Collectors.toList());</code></pre>
+      <pre><code class="language-java">// Spring JPA — декларативный запрос
+@Query("SELECT e FROM Employee e " +
+       "WHERE e.department = :dept " +
+       "ORDER BY e.salary DESC")
+List&lt;Employee&gt; findByDept(
+    @Param("dept") String dept);</code></pre>
+    </div>
+    <div>
+      <table style="margin-bottom:.5em;">
+        <thead><tr><th>Технология</th><th>Область</th></tr></thead>
+        <tbody>
+          <tr><td><strong>SQL</strong></td><td>Базы данных повсеместно</td></tr>
+          <tr><td><strong>HTML / CSS</strong></td><td>Структура и стиль веб-страниц</td></tr>
+          <tr><td><strong>Prolog</strong></td><td>ИИ и логические системы</td></tr>
+          <tr><td><strong>Terraform</strong></td><td>Инфраструктура как код (IaC)</td></tr>
+          <tr><td><strong>Dockerfile</strong></td><td>Описание Docker-образа</td></tr>
+          <tr><td><strong>@Transactional</strong></td><td>Spring — намерение, не детали</td></tr>
+        </tbody>
+      </table>
+      <div class="pros" style="margin-bottom:.4em;">
+        <h3>✅ Плюсы</h3>
+        <ul><li>Читается как человеческий язык</li><li>Меньше кода, легче поддерживать</li></ul>
+      </div>
+      <div class="cons">
+        <h3>❌ Минусы</h3>
+        <ul><li>Меньше контроля над деталями</li><li>Производительность зависит от реализации</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 8 — СРАВНЕНИЕ
+══════════════════════════════════════════════════ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>8. Сравнение парадигм</h2>
+  <p>Когда что использовать?</p>
+</section>
+
+<section>
+  <h1>Сравнительная таблица</h1>
+  <table>
+    <thead>
+      <tr><th>Парадигма</th><th>Вопрос</th><th>Состояние</th><th>Языки</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Императивная</strong></td><td>КАК делать?</td><td>Изменяемое</td><td>C, Assembler, COBOL</td></tr>
+      <tr><td><strong>Процедурная</strong></td><td>КАК через функции?</td><td>Изменяемое</td><td>C, Pascal, PHP</td></tr>
+      <tr><td><strong>ООП</strong></td><td>КТО делает?</td><td>Инкапсулировано</td><td>Java, C++, Python</td></tr>
+      <tr><td><strong>Функциональная</strong></td><td>ЧТО вычислить?</td><td>Иммутабельное</td><td>Haskell, Scala, Erlang</td></tr>
+      <tr><td><strong>Декларативная</strong></td><td>ЧТО получить?</td><td>Скрытое</td><td>SQL, HTML, Terraform</td></tr>
+    </tbody>
+  </table>
+  <div class="box" style="margin-top:.7em;">
+    <div class="label">Вывод</div>
+    <p>Нет «лучшей» парадигмы — <strong>каждая решает свои задачи</strong>. Хороший разработчик знает их все и выбирает подходящую.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 9 — JAVA
+══════════════════════════════════════════════════ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>9. Java — мультипарадигменный язык</h2>
+  <p>Все подходы в одном языке</p>
+</section>
+
+<section>
+  <h1>Эволюция Java</h1>
+  <div class="cols">
+    <div>
+      <table>
+        <thead><tr><th>Версия</th><th>Что добавили</th></tr></thead>
+        <tbody>
+          <tr><td>Java 1.0 (1996)</td><td>ООП, классы, интерфейсы</td></tr>
+          <tr><td>Java 5 (2004)</td><td>Дженерики, Enum, for-each</td></tr>
+          <tr><td><strong>Java 8 (2014) ⭐</strong></td><td><strong>Лямбды, Stream API, Optional</strong></td></tr>
+          <tr><td>Java 14+</td><td>Records — иммутабельные объекты</td></tr>
+          <tr><td>Java 17+</td><td>Sealed classes, Pattern Matching</td></tr>
+          <tr><td>Java 21+</td><td>Virtual threads, Sequenced Collections</td></tr>
+        </tbody>
+      </table>
+      <div class="box orange" style="margin-top:.5em;">
+        <div class="label">Java 8 — переломный момент</div>
+        <p>Именно с Java 8 язык стал поддерживать <strong>функциональный стиль</strong> наравне с ООП.</p>
+      </div>
+    </div>
+    <div>
+      <pre><code class="language-java">List&lt;Integer&gt; nums =
+    Arrays.asList(1,-2,3,-4,5);
+
+// Процедурный стиль
+int sum = 0;
+for (int n : nums) sum += n;
+
+// ООП стиль
+class NumCollection {
+  private List&lt;Integer&gt; items;
+  public int positiveSum() {
+    return items.stream()
+      .filter(n -> n > 0)
+      .mapToInt(Integer::intValue)
+      .sum();
+  }
+}
+
+// Функциональный стиль (Java 8+)
+int result = nums.stream()
+    .filter(n -> n > 0)
+    .reduce(0, Integer::sum);
+
+// Все три — разные подходы, ОДИН язык!</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 10 — ПРАКТИКА
+══════════════════════════════════════════════════ -->
+<section class="slide-section" data-background-gradient="linear-gradient(135deg,#0f0f1a 0%,#16213e 100%)">
+  <h2>10. Практика</h2>
+  <p>Сравниваем подходы на реальной задаче</p>
+</section>
+
+<section>
+  <h1>Топ-3 самых дорогих товара — два подхода</h1>
+  <div class="cols">
+    <div>
+      <p class="small muted" style="margin-bottom:.3em;">🔴 Императивный:</p>
+      <pre><code class="language-java">List&lt;Product&gt; elec = new ArrayList&lt;&gt;();
+for (Product p : products) {
+  if (p.category.equals("Электроника"))
+    elec.add(p);
+}
+elec.sort((a, b) ->
+    Double.compare(b.price, a.price));
+List&lt;Product&gt; top3 =
+    elec.subList(0, 3);
+for (Product p : top3)
+  System.out.println(
+      p.name + " $" + p.price);</code></pre>
+    </div>
+    <div>
+      <p class="small muted" style="margin-bottom:.3em;">🟢 Функциональный (Java 8+):</p>
+      <pre><code class="language-java">products.stream()
+  .filter(p ->
+      p.category.equals("Электроника"))
+  .sorted(Comparator
+      .comparingDouble(p -> -p.price))
+  .limit(3)
+  .forEach(p ->
+      System.out.println(
+          p.name + " $" + p.price));</code></pre>
+      <div class="box green" style="margin-top:.5em;">
+        <div class="label">Вывод</div>
+        <p>Функциональный в <strong>2× короче</strong> и читается как текст:<br/>
+        <em>«Отфильтруй → Отсортируй → Возьми 3 → Выведи»</em></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Antipatterns -->
+<section>
+  <h1>⚠️ Антипаттерны — чего избегать</h1>
+  <div class="cols">
+    <div>
+      <pre><code class="language-java">// ❌ Глобальное состояние
+public class BadExample {
+  public static int counter = 0;
+
+  public static void process(String d) {
+    counter++; // неявный побочный эффект
+    System.out.println("Processing: "+d);
+  }
+}</code></pre>
+      <pre><code class="language-java">// ❌ Бог-класс
+public class GodClass {
+  void connectToDatabase() { ... }
+  void sendEmail()         { ... }
+  void calculateTax()      { ... }
+  void generatePDF()       { ... }
+  void validateUser()      { ... }
+  // 500 методов...
+}</code></pre>
+    </div>
+    <div>
+      <pre><code class="language-java">// ✅ Single Responsibility Principle
+// Каждый класс — одна ответственность
+
+public class DatabaseConnector { ... }
+public class EmailService       { ... }
+public class TaxCalculator      { ... }
+public class PdfGenerator       { ... }
+public class UserValidator      { ... }</code></pre>
+      <div class="box orange" style="margin-top:.5em;">
+        <div class="label">Принцип SRP</div>
+        <p>Каждый класс должен иметь <strong>одну причину для изменения</strong>.<br/>
+        Это первый принцип из SOLID.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Summary -->
+<section>
+  <h1>📌 Итоги лекции</h1>
+  <div class="cols">
+    <ul class="checklist">
+      <li><strong>Парадигма</strong> — способ мышления при написании программ</li>
+      <li><strong>Нет «лучшей»</strong> — каждая решает свои задачи</li>
+      <li>Java поддерживает <strong>несколько парадигм</strong> одновременно</li>
+      <li>ООП — <strong>основа</strong> языка</li>
+      <li>Функциональное — <strong>с Java 8</strong> (лямбды, Stream API)</li>
+      <li>ООП = <strong>состояние</strong>, ФП = <strong>трансформации</strong></li>
+      <li>Предпочитай <strong>композицию</strong> наследованию</li>
+    </ul>
+    <div>
+      <div class="box blue">
+        <div class="label">Главная цель любой парадигмы</div>
+        <p>Написать код, который легко <strong>читать</strong>, легко <strong>тестировать</strong> и легко <strong>изменять</strong>.</p>
+      </div>
+      <div class="card purple" style="margin-top:.6em;">
+        <h3>❓ Вопросы для самопроверки</h3>
+        <p>
+          1. Разница между императивным и декларативным?<br/>
+          2. Назови 4 принципа ООП.<br/>
+          3. Что такое чистая функция?<br/>
+          4. С какой версии Java поддерживает ФП?<br/>
+          5. Что такое «хрупкий базовый класс»?
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Homework -->
+<section>
+  <h1>📝 Домашнее задание</h1>
+  <p style="margin-bottom:.3em;">Обработать список студентов <strong>двумя способами</strong>:</p>
+  <div class="cols">
+    <pre><code class="language-java">class Student {
+  String name;
+  int    age;
+  double gpa;      // средний балл 0-10
+  String faculty;
+}
+
+// Реализовать ДВУМЯ способами:
+// 1. Императивный  — циклы и if
+// 2. Функциональный — Stream API
+
+// Найти студентов факультета
+// "Информатика" с GPA > 7.0
+// Отсортировать по убыванию балла
+// Вывести топ-5</code></pre>
+    <div>
+      <div class="box green">
+        <div class="label">БОНУС — ООП стиль</div>
+        <p>Создать класс <code>StudentRepository</code> с методом:<br/>
+        <code>findTopStudents(<br/>
+        &nbsp;&nbsp;String faculty,<br/>
+        &nbsp;&nbsp;double minGpa,<br/>
+        &nbsp;&nbsp;int limit<br/>
+        )</code></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="slide-title" data-background-gradient="linear-gradient(145deg,#0f0f1a 0%,#0f3460 100%)">
+  <h1>Спасибо за внимание! ☕</h1>
+  <h2>Лекция 1 из 19 · Семестр 2 · Java OOP</h2>
+  <p style="margin-top:.8em; color:var(--dim); font-size:.85em;">
+    <strong style="color:var(--text);">Следующая лекция →</strong><br/>
+    <span class="muted">Лекция 2: Классы и объекты. Инкапсуляция и Наследование</span>
+  </p>
+  <div style="margin-top:.8em;">
+    <span class="badge">Java</span>
+    <span class="badge blue">ООП</span>
+    <span class="badge green">Парадигмы</span>
+  </div>
+</section>
+
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/zoom/zoom.js"></script>
+<script>
+  Reveal.initialize({
+    hash:true, slideNumber:'c/t', progress:true, controls:true, center:false,
+    transition:'slide', transitionSpeed:'fast', backgroundTransition:'fade',
+    width:1280, height:720, margin:0.04,
+    plugins:[RevealHighlight, RevealNotes, RevealZoom],
+  });
+</script>
+<style>
+.lec-nav{position:fixed;bottom:0;left:0;right:0;z-index:9999;display:none;align-items:center;justify-content:center;gap:.75rem;padding:.75rem 1.5rem;background:rgba(15,15,26,.92);backdrop-filter:blur(12px);border-top:1px solid #30363d;font-family:'Inter',sans-serif;}
+.lec-nav.visible{display:flex;}
+.lec-nav a,.lec-nav button{display:inline-flex;align-items:center;gap:.4rem;padding:.45em 1.1em;border-radius:8px;font-size:.78rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all .15s;border:1px solid #30363d;background:#1a1a2e;color:#cbd5e0;}
+.lec-nav a:hover,.lec-nav button:hover{border-color:#58a6ff;color:#58a6ff;background:#0f0f1a;}
+.lec-nav .nav-next{background:#e94560;border-color:#e94560;color:#fff;}
+.lec-nav .nav-next:hover{background:#c73050;border-color:#c73050;color:#fff;}
+.lec-nav .nav-home{border-color:#30363d;}
+.lec-nav .nav-sep{width:1px;height:24px;background:#30363d;}
+.lec-nav .nav-label{font-size:.68rem;color:#8b949e;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;}
+</style>
+<div class="lec-nav" id="lecNav">
+  <a href="../lecture-00-intro/lecture-00-reveal.html" class="nav-prev">&#8592; Введение в курс</a><div class="nav-sep"></div>
+  <a href="../index.html" class="nav-home">&#9776; К списку</a>
+  <span class="nav-label">Лекция 1 из 19</span>
+  <div class="nav-sep"></div><a href="../lecture-02-classes-oop/lecture-02-reveal.html" class="nav-next">Классы и объекты &#8594;</a>
+</div>
+<script>
+(function(){
+  function checkLastSlide(){
+    if(!window.Reveal) return;
+    var idx   = Reveal.getIndices();
+    var total = Reveal.getTotalSlides();
+    var cur   = Reveal.getSlidePastCount() + 1;
+    var nav   = document.getElementById('lecNav');
+    if(!nav) return;
+    // show on last slide
+    if(cur >= total) nav.classList.add('visible');
+    else             nav.classList.remove('visible');
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    if(window.Reveal){
+      Reveal.on('slidechanged', checkLastSlide);
+      Reveal.on('ready',        checkLastSlide);
+    } else {
+      // wait for Reveal to init
+      window.addEventListener('load', function(){
+        if(window.Reveal){
+          Reveal.on('slidechanged', checkLastSlide);
+          Reveal.on('ready',        checkLastSlide);
+        }
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>
+
