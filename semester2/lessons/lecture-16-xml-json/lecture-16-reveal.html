@@ -199,49 +199,37 @@ public class Product {
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/zoom/zoom.js"></script>
 <script>Reveal.initialize({hash:true,slideNumber:'c/t',progress:true,controls:true,center:false,transition:'slide',transitionSpeed:'fast',backgroundTransition:'fade',width:1280,height:720,margin:0.04,plugins:[RevealHighlight,RevealZoom]});</script>
 <style>
-.lec-nav{position:fixed;bottom:0;left:0;right:0;z-index:9999;display:none;align-items:center;justify-content:center;gap:.75rem;padding:.75rem 1.5rem;background:rgba(15,15,26,.92);backdrop-filter:blur(12px);border-top:1px solid #30363d;font-family:'Inter',sans-serif;}
-.lec-nav.visible{display:flex;}
-.lec-nav a,.lec-nav button{display:inline-flex;align-items:center;gap:.4rem;padding:.45em 1.1em;border-radius:8px;font-size:.78rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all .15s;border:1px solid #30363d;background:#1a1a2e;color:#cbd5e0;}
-.lec-nav a:hover,.lec-nav button:hover{border-color:#58a6ff;color:#58a6ff;background:#0f0f1a;}
-.lec-nav .nav-next{background:#e94560;border-color:#e94560;color:#fff;}
-.lec-nav .nav-next:hover{background:#c73050;border-color:#c73050;color:#fff;}
-.lec-nav .nav-home{border-color:#30363d;}
-.lec-nav .nav-sep{width:1px;height:24px;background:#30363d;}
-.lec-nav .nav-label{font-size:.68rem;color:#8b949e;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;}
+#lecNav{
+  position:fixed;bottom:.7rem;left:50%;transform:translateX(-50%);
+  z-index:99999;
+  display:inline-flex;align-items:center;gap:.3rem;
+  font-family:Inter,sans-serif;
+  background:rgba(15,15,26,.82);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:10px;
+  padding:.28em .5em;
+  backdrop-filter:blur(10px);
+  opacity:.4;transition:opacity .2s;
+  pointer-events:auto;
+}
+#lecNav:hover{opacity:1;}
+#lecNav a{
+  display:inline-flex;align-items:center;
+  padding:.2em .55em;border-radius:6px;font-size:.72rem;font-weight:600;
+  text-decoration:none;border:1px solid transparent;
+  color:#cbd5e0;transition:all .15s;white-space:nowrap;
+}
+#lecNav a:hover{border-color:#58a6ff;color:#58a6ff;background:rgba(88,166,255,.08);}
+#lecNav .nav-next{
+  background:rgba(233,69,96,.75);border-color:rgba(233,69,96,.5);color:#fff;
+}
+#lecNav .nav-next:hover{background:#e94560;border-color:#e94560;}
+#lecNav .nav-sep{width:1px;height:14px;background:rgba(255,255,255,.13);flex-shrink:0;margin:0 .1em;}
+#lecNav .nav-lbl{font-size:.62rem;color:#6e7681;padding:0 .25em;user-select:none;}
 </style>
-<div class="lec-nav" id="lecNav">
-  <a href="../lecture-15-localization-datetime/lecture-15-reveal.html" class="nav-prev">&#8592; Локализация и DateTime</a><div class="nav-sep"></div>
-  <a href="../index.html" class="nav-home">&#9776; К списку</a>
-  <span class="nav-label">Лекция 16 из 19</span>
-  <div class="nav-sep"></div><a href="../lecture-17-reflection-annotations/lecture-17-reveal.html" class="nav-next">Рефлексия и аннотации &#8594;</a>
+<div id="lecNav">
+  <a href="../lecture-15-localization-datetime/lecture-15-reveal.html" title="Локализация / DateTime">&#8592;</a><div class="nav-sep"></div><a href="../index.html" title="К списку лекций">&#9776;</a>
+  <span class="nav-lbl">16 / 19</span>
+  <div class="nav-sep"></div><a href="../lecture-17-reflection-annotations/lecture-17-reveal.html" class="nav-next" title="Рефлексия">&#8594;</a>
 </div>
-<script>
-(function(){
-  function checkLastSlide(){
-    if(!window.Reveal) return;
-    var idx   = Reveal.getIndices();
-    var total = Reveal.getTotalSlides();
-    var cur   = Reveal.getSlidePastCount() + 1;
-    var nav   = document.getElementById('lecNav');
-    if(!nav) return;
-    // show on last slide
-    if(cur >= total) nav.classList.add('visible');
-    else             nav.classList.remove('visible');
-  }
-  document.addEventListener('DOMContentLoaded', function(){
-    if(window.Reveal){
-      Reveal.on('slidechanged', checkLastSlide);
-      Reveal.on('ready',        checkLastSlide);
-    } else {
-      // wait for Reveal to init
-      window.addEventListener('load', function(){
-        if(window.Reveal){
-          Reveal.on('slidechanged', checkLastSlide);
-          Reveal.on('ready',        checkLastSlide);
-        }
-      });
-    }
-  });
-})();
-</script>
 </body></html>
